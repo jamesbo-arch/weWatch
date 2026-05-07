@@ -7,6 +7,7 @@
 import js from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
+import globals from 'globals';
 
 export default [
   {
@@ -27,6 +28,10 @@ export default [
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsParser,
+      globals: {
+        ...globals.node,
+        ...globals.es2022,
+      },
       parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
@@ -37,6 +42,7 @@ export default [
     },
     rules: {
       // Strictness
+      'no-unused-vars': 'off', // superseded by @typescript-eslint/no-unused-vars
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
