@@ -43,8 +43,9 @@ export default [
     rules: {
       // Strictness
       'no-unused-vars': 'off', // superseded by @typescript-eslint/no-unused-vars
+      'no-redeclare': 'off',  // TypeScript allows same-name const + type (declaration merging)
       '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
 
       // Style
