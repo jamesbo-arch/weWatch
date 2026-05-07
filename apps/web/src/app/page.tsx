@@ -1,7 +1,5 @@
+import { redirect } from 'next/navigation';
+
 export default function Home() {
-  return (
-    <main>
-      <h1>weWatch</h1>
-    </main>
-  );
+  redirect('/watchfaces');
 }

@@ -14,13 +14,16 @@
     "clean": "rm -rf .next .tsbuildinfo"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/postcss": "^4.2.4",
     "@wewatch/ir-schema": "workspace:*",
     "@wewatch/shared-utils": "workspace:*",
     "next": "^15.3.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "tailwindcss": "^4.2.4"
+    "react-hook-form": "^7.75.0",
+    "tailwindcss": "^4.2.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
