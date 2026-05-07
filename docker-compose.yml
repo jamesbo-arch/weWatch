@@ -1,0 +1,72 @@
+name: wewatch-dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: wewatch-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: wewatch
+      POSTGRES_PASSWORD: wewatch
+      POSTGRES_DB: wewatch_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wewatch"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: wewatch-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.10
+    container_name: wewatch-meili
+    restart: unless-stopped
+    environment:
+      MEILI_ENV: development
+      MEILI_MASTER_KEY: dev_master_key_change_me
+    ports:
+      - "7700:7700"
+    volumes:
+      - meili_data:/meili_data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Garmin SDK build container — used by build-worker.
+  # Built locally via: docker compose --profile garmin build
+  # The Dockerfile lives at infra/docker/Dockerfile.garmin-sdk
+  garmin-sdk:
+    profiles: ["garmin"]
+    build:
+      context: ./infra/docker
+      dockerfile: Dockerfile.garmin-sdk
+      args:
+        CIQ_SDK_VERSION: ${CIQ_SDK_VERSION:-7.4.2}
+    image: wewatch/garmin-sdk:${CIQ_SDK_VERSION:-7.4.2}
+    container_name: wewatch-garmin-sdk
+    # No `command` here — invoked ad-hoc by the build-worker, not as a long-running service.
+    entrypoint: ["bash", "-lc"]
+    command: ["echo 'wewatch/garmin-sdk image is ready. Invoke via docker run.'"]
+
+volumes:
+  pg_data:
+  redis_data:
+  meili_data:

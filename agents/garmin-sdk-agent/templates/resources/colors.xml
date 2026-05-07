@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  生成器从 IR.color_scheme 派生。
+  对 MIP 设备：会在 resources-mip/colors.xml 中重写为量化后的值（避免运行时量化闪烁）。
+  对 AMOLED 设备：保留原值，AOD 路径使用 *Aod 变体。
+-->
+<resources>
+  <color id="ColorPrimary">{{PRIMARY}}</color>
+  <color id="ColorSecondary">{{SECONDARY}}</color>
+  <color id="ColorAccent">{{ACCENT}}</color>
+  <color id="ColorDanger">{{DANGER}}</color>
+  <color id="ColorBackground">{{BACKGROUND}}</color>
+
+  <!-- AOD overrides（如 IR.color_scheme.supports_aod == true 才生成） -->
+  <color id="ColorPrimaryAod">{{PRIMARY_AOD}}</color>
+  <color id="ColorSecondaryAod">{{SECONDARY_AOD}}</color>
+  <color id="ColorAccentAod">{{ACCENT_AOD}}</color>
+</resources>

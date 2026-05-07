@@ -1,0 +1,44 @@
+{
+  "name": "@wewatch/ir-schema",
+  "version": "0.1.0",
+  "description": "Watch Face Intermediate Representation schema (Zod). Shared contract between Backend, Frontend, Garmin SDK, and AI Pipeline agents.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./devices": {
+      "types": "./dist/devices.d.ts",
+      "import": "./dist/devices.js"
+    },
+    "./validators": {
+      "types": "./dist/validators.d.ts",
+      "import": "./dist/validators.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "json-schema": "ts-node scripts/emit-json-schema.ts"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "eslint": "^9.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.0",
+    "vitest": "^1.6.0",
+    "zod-to-json-schema": "^3.23.1"
+  }
+}

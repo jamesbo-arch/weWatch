@@ -1,0 +1,23 @@
+{
+  "name": "@wewatch/api-types",
+  "version": "0.1.0",
+  "description": "TypeScript types derived from the API's OpenAPI spec",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "echo 'no tests yet'",
+    "lint": "eslint src --ext .ts || true",
+    "typecheck": "tsc --noEmit || true",
+    "clean": "rm -rf dist .tsbuildinfo",
+    "generate": "echo 'TODO: openapi-typescript ../../docs/api/openapi.json -o src/openapi.d.ts'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.next/
+build/
+*.tsbuildinfo
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Turbo
+.turbo/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.suo
+*.user
+
+# pnpm
+.pnpm-store/
+
+# Test coverage
+coverage/
+
+# Garmin SDK manager (binary asset, not source)
+connectiq-sdk-manager-windows/

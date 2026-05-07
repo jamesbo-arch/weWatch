@@ -1,0 +1,23 @@
+{
+  "name": "@wewatch/shared-utils",
+  "version": "0.1.0",
+  "description": "Shared utility functions across weWatch packages",
+  "license": "UNLICENSED",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts || true",
+    "typecheck": "tsc --noEmit || true",
+    "clean": "rm -rf dist .tsbuildinfo"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0",
+    "vitest": "^1.6.0"
+  }
+}

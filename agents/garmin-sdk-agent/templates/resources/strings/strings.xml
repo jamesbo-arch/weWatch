@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  默认（英文）字符串。其他语言通过 strings-<locale>/strings.xml 覆盖：
+    strings-zh/strings.xml
+    strings-jpn/strings.xml
+    ...
+  生成器会按 IR.meta.name / description 多语言字段自动派生这些文件。
+-->
+<strings>
+  <string id="AppName">{{APP_NAME_DEFAULT}}</string>
+  <string id="AppDescription">{{APP_DESC_DEFAULT}}</string>
+</strings>

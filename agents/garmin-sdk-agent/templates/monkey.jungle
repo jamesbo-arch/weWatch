@@ -1,0 +1,28 @@
+# weWatch Watch Face · monkey.jungle 模板
+# 生成器会按 IR.targets 与资源结构替换/扩展以下占位符。
+#
+# Jungle 文档：https://developer.garmin.com/connect-iq/reference-guides/jungle-reference/
+
+# ---------- 基础 ----------
+project.manifest = manifest.xml
+
+base.sourcePath   = source
+base.resourcePath = resources
+
+# ---------- 形状特化（仅当 resources-<shape>/ 存在时启用） ----------
+# 圆形屏 资源
+roundShapeResources = resources-round
+# 方形/矩形 资源（如 vivomove 系列）
+squareShapeResources = resources-square
+
+# ---------- 设备特化模板（按需生成） ----------
+# {{DEVICE_OVERRIDES}}
+# 例如：
+# fr255.resourcePath = $(base.resourcePath);$(roundShapeResources);resources-mip;resources-260x260
+# venu3.resourcePath = $(base.resourcePath);$(roundShapeResources);resources-amoled;resources-454x454
+
+# ---------- 设备代码注解排除（用 (:device_id) 注解控制设备特定函数） ----------
+# {{EXCLUDE_ANNOTATIONS}}
+# 例如：
+# fr255.excludeAnnotations  = exclude_amoled;exclude_venu3;exclude_fenix7
+# venu3.excludeAnnotations  = exclude_mip;exclude_fr255;exclude_fenix7

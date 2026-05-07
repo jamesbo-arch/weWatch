@@ -1,0 +1,51 @@
+# weWatch · API image
+# Multi-stage build for apps/api (NestJS).
+
+# ───── Stage 1: deps ─────
+FROM node:20.10-alpine AS deps
+RUN corepack enable && corepack prepare pnpm@9.7.0 --activate
+WORKDIR /repo
+
+# Copy workspace manifests only — maximize cache hit
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.base.json ./
+COPY apps/api/package.json ./apps/api/
+COPY packages/ir-schema/package.json ./packages/ir-schema/
+COPY packages/api-types/package.json ./packages/api-types/
+COPY packages/shared-utils/package.json ./packages/shared-utils/
+
+RUN pnpm install --frozen-lockfile
+
+# ───── Stage 2: build ─────
+FROM node:20.10-alpine AS build
+RUN corepack enable && corepack prepare pnpm@9.7.0 --activate
+WORKDIR /repo
+
+COPY --from=deps /repo/node_modules ./node_modules
+COPY --from=deps /repo/apps/api/node_modules ./apps/api/node_modules
+COPY --from=deps /repo/packages/ir-schema/node_modules ./packages/ir-schema/node_modules
+
+COPY . .
+RUN pnpm --filter @wewatch/ir-schema build \
+    && pnpm --filter api build
+
+# ───── Stage 3: runtime ─────
+FROM node:20.10-alpine AS runtime
+RUN apk add --no-cache tini
+RUN corepack enable && corepack prepare pnpm@9.7.0 --activate
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+EXPOSE 3000
+
+# Bring in only what's needed at runtime
+COPY --from=build /repo/package.json /repo/pnpm-lock.yaml /repo/pnpm-workspace.yaml ./
+COPY --from=build /repo/apps/api/package.json ./apps/api/
+COPY --from=build /repo/apps/api/dist ./apps/api/dist
+COPY --from=build /repo/packages/ir-schema/dist ./packages/ir-schema/dist
+COPY --from=build /repo/packages/ir-schema/package.json ./packages/ir-schema/
+COPY --from=build /repo/node_modules ./node_modules
+
+USER node
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["node", "apps/api/dist/main.js"]

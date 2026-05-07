@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+  weWatch Watch Face Manifest 模板
+  生成器会按 IR + targets 替换以下占位符：
+  - {{APP_ID}}            : 32 字符稳定哈希（基于 ir.meta.id）
+  - {{ENTRY_CLASS}}       : Application 入口类名（默认 WeWatchApp）
+  - {{MIN_SDK}}            : 派生自 IR 用到的 API
+  - {{PRODUCTS}}           : <iq:product id="..."/> 列表
+  - {{PERMISSIONS}}        : <iq:uses-permission .../> 列表
+  - {{LANGUAGES}}          : <iq:language>...</iq:language> 列表
+  - {{LAUNCHER_ICON_REF}}  : 默认 @Drawables.LauncherIcon
+-->
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+  <iq:application
+      id="{{APP_ID}}"
+      type="watchface"
+      name="@Strings.AppName"
+      entry="{{ENTRY_CLASS}}"
+      launcherIcon="{{LAUNCHER_ICON_REF}}"
+      minSdkVersion="{{MIN_SDK}}">
+
+    <iq:products>
+      {{PRODUCTS}}
+    </iq:products>
+
+    <iq:permissions>
+      {{PERMISSIONS}}
+    </iq:permissions>
+
+    <iq:languages>
+      {{LANGUAGES}}
+    </iq:languages>
+
+    <iq:barrels/>
+  </iq:application>
+</iq:manifest>

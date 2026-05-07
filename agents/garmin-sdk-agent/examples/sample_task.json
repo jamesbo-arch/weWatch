@@ -1,0 +1,107 @@
+{
+  "task_id": "wf-2026-04-26-demo-001",
+  "type": "build_watchface",
+  "designer_id": "ds_founder",
+  "targets": ["fr255", "fr265", "venu3", "fenix7pro_amoled"],
+  "constraints": {
+    "max_memory_kb": 64,
+    "min_fps_amoled": 1,
+    "support_aod": true,
+    "min_battery_drain_pct_per_day": 5
+  },
+  "deliverables": ["prg", "screenshots", "build_report"],
+  "ir": {
+    "ir_version": "0.1.0",
+    "meta": {
+      "id": "wf_demo_001",
+      "designer_id": "ds_founder",
+      "name": { "default": "weWatch Hello", "zh-CN": "weWatch 你好" },
+      "description": { "default": "Minimal demo watch face from weWatch" },
+      "tags": ["minimal", "demo", "amoled"],
+      "created_at": "2026-04-26T10:00:00Z",
+      "license": "platform-default",
+      "ai_generated": false,
+      "ip_review_status": "approved"
+    },
+    "canvas": {
+      "shape": "round",
+      "reference_resolution": [390, 390],
+      "background": { "type": "solid", "solid": { "color": "#000000" } }
+    },
+    "color_scheme": {
+      "primary": "#FFFFFF",
+      "secondary": "#666666",
+      "accent": "#FF6600",
+      "danger": "#FF0033",
+      "background": "#000000",
+      "supports_aod": true,
+      "aod_overrides": { "primary": "#888888", "accent": "#444444" }
+    },
+    "typography": {
+      "fonts": [
+        { "id": "main", "family": "system-numeric-large", "fallback": "system-large" },
+        { "id": "small", "family": "system-small" }
+      ]
+    },
+    "layout": {
+      "engine": "anchor",
+      "elements": [
+        {
+          "id": "el_time",
+          "type": "time",
+          "anchor": { "x": 0.5, "y": 0.5, "align_x": "center", "align_y": "middle" },
+          "size": { "mode": "auto" },
+          "style": { "color_ref": "primary", "font_ref": "main" },
+          "visibility": { "always": true, "aod_visible": true },
+          "props": { "format": "HH:mm", "show_leading_zero": true }
+        },
+        {
+          "id": "el_date",
+          "type": "date",
+          "anchor": { "x": 0.5, "y": 0.7, "align_x": "center", "align_y": "middle" },
+          "size": { "mode": "auto" },
+          "style": { "color_ref": "secondary", "font_ref": "small" },
+          "visibility": { "always": true, "aod_visible": false },
+          "props": { "format": "ddd, MMM dd", "locale": "auto" }
+        },
+        {
+          "id": "el_hr",
+          "type": "complication",
+          "anchor": { "x": 0.5, "y": 0.85, "align_x": "center", "align_y": "middle" },
+          "size": { "mode": "auto" },
+          "style": { "color_ref": "accent", "font_ref": "small" },
+          "visibility": { "always": true, "aod_visible": false },
+          "props": {
+            "data_type": "heart_rate",
+            "display_style": "icon_value",
+            "label": "BPM",
+            "unit_system": "auto"
+          }
+        },
+        {
+          "id": "el_steps_arc",
+          "type": "progress_arc",
+          "anchor": { "x": 0.5, "y": 0.5, "align_x": "center", "align_y": "middle" },
+          "size": { "mode": "auto" },
+          "style": { "color_ref": "accent" },
+          "visibility": { "always": true, "aod_visible": false },
+          "props": {
+            "data_type": "steps_progress",
+            "start_angle": -90,
+            "sweep_angle": 360,
+            "thickness": 6,
+            "background_color_ref": "secondary",
+            "fill_color_ref": "accent"
+          }
+        }
+      ]
+    },
+    "data_bindings": [
+      { "id": "hr", "source": "Toybox.ActivityMonitor", "ttl_sec": 30 }
+    ],
+    "performance_hints": {
+      "redraw_budget": "low",
+      "aod_strategy": "minimal_seconds"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+# weWatch · Garmin Connect IQ SDK image
+# Used by build-worker to compile Monkey C → .prg / .iq.
+# Referenced from agents/garmin-sdk-agent/BUILD_PIPELINE.md §0.
+
+FROM eclipse-temurin:17-jdk-jammy
+
+ARG CIQ_SDK_VERSION=7.4.2
+ENV CIQ_HOME=/opt/connectiq
+ENV PATH="${CIQ_HOME}/bin:${PATH}"
+
+# OS deps required by SDK + Xvfb for headless simulator screenshots
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        wget \
+        unzip \
+        ca-certificates \
+        xvfb \
+        libgl1 \
+        libfreetype6 \
+        libxi6 \
+        libxrandr2 \
+        libxcursor1 \
+        libxinerama1 \
+        imagemagick \
+        pngquant \
+        optipng \
+    && rm -rf /var/lib/apt/lists/*
+
+# NOTE: This URL is illustrative. Garmin's actual SDK download paths require
+# accepting their developer agreement. In production CI, mount the SDK from a
+# trusted artifact store (S3 / GCS) instead of fetching it inside the build:
+#   docker run -v /artifacts/connectiq-${CIQ_SDK_VERSION}.zip:/tmp/sdk.zip ...
+RUN mkdir -p ${CIQ_HOME}
+COPY ./connectiq-sdk.zip /tmp/sdk.zip
+RUN if [ -f /tmp/sdk.zip ]; then \
+      unzip -q /tmp/sdk.zip -d ${CIQ_HOME} && rm /tmp/sdk.zip; \
+    else \
+      echo "WARNING: connectiq-sdk.zip not present at build context."; \
+      echo "Mount the SDK at runtime instead: -v /path/to/sdk:${CIQ_HOME}"; \
+    fi
+
+# Developer key MUST be mounted at runtime, never baked into image
+ENV CIQ_DEV_KEY=/secrets/developer_key
+
+WORKDIR /workspace
+ENTRYPOINT ["bash", "-lc"]
+CMD ["monkeyc --version || echo 'SDK not installed; mount one at /opt/connectiq.'"]

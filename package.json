@@ -1,0 +1,36 @@
+{
+  "name": "wewatch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "weWatch · Global third-party watch face platform · monorepo root",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20.10.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.7.0",
+  "scripts": {
+    "bootstrap": "pnpm install && pnpm build && pnpm --filter api db:migrate && echo 'Bootstrap complete. Run: pnpm dev'",
+    "dev": "turbo run dev --concurrency=12",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch --concurrency=12",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint -- --fix",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\" --ignore-path .gitignore",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "changeset": "changeset",
+    "agents:list": "ls -1 agents/",
+    "agents:check": "node scripts/check-agent-knowledge.js"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "@types/node": "^20.14.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.5.0"
+  }
+}
