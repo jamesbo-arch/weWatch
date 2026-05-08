@@ -24,6 +24,9 @@ Thumbs.db
 *.suo
 *.user
 
+# Claude Code local settings (machine-specific permissions)
+.claude/settings.local.json
+
 # pnpm
 .pnpm-store/
 
@@ -32,3 +35,6 @@ coverage/
 
 # Garmin SDK manager (binary asset, not source)
 connectiq-sdk-manager-windows/
+*.zip
+*.rar
+node_modules

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<strings>
+  <string id="AppName">weWatch Demo</string>
+  <string id="StatusLoading">Checking license...</string>
+  <string id="StatusUnlocked">UNLOCKED</string>
+  <string id="StatusLocked">LOCKED</string>
+  <string id="StatusError">Network Error</string>
+  <string id="LabelTime">Time</string>
+  <string id="LabelDevice">Device</string>
+</strings>

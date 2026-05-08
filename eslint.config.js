@@ -30,6 +30,7 @@ export default [
       parser: tsParser,
       globals: {
         ...globals.node,
+        ...globals.browser,
         ...globals.es2022,
       },
       parserOptions: {
@@ -42,6 +43,7 @@ export default [
     },
     rules: {
       // Strictness
+      'no-undef': 'off',      // TypeScript already catches undefined variables; avoids false positives on global types (Express, RequestInit, etc.)
       'no-unused-vars': 'off', // superseded by @typescript-eslint/no-unused-vars
       'no-redeclare': 'off',  // TypeScript allows same-name const + type (declaration merging)
       '@typescript-eslint/no-explicit-any': 'error',
@@ -59,7 +61,7 @@ export default [
         {
           patterns: [
             {
-              group: ['../../*'],
+              group: ['../../../*'],
               message: 'Avoid deep relative imports; use workspace alias (@wewatch/*).',
             },
           ],

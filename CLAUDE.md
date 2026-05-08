@@ -2,72 +2,85 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+本文件为 Claude Code（claude.ai/code）在此代码库中工作时提供指引。
 
-**weWatch** is a Garmin watch face marketplace platform. Users describe or upload watch face designs; an AI pipeline generates an Intermediate Representation (IR); a build worker compiles it to Garmin's Monkey C via the Garmin SDK; and the compiled `.prg` file is distributed through the marketplace.
+## 项目概述
 
-## Monorepo Structure
+**weWatch** 是一个 Garmin 表盘市场平台。用户描述或上传表盘设计；AI 流水线生成中间表示（IR）；构建工作器通过 Garmin SDK 将其编译为 Monkey C；编译后的 `.prg` 文件通过市场分发。
 
-pnpm + Turbo monorepo. Workspace roots: `apps/`, `packages/`, `workers/`, `agents/`, `tools/`.
+## Monorepo 结构
 
-- **`apps/api`** — NestJS REST API (PostgreSQL + Drizzle ORM)
-- **`apps/web`** — Next.js frontend (consumer marketplace + designer + admin)
-- **`packages/ir-schema`** — **Central contract package** (Zod schemas + TypeScript types for Watch Face IR)
-- **`packages/api-types`** — Auto-generated OpenAPI → TypeScript types
-- **`packages/shared-utils`** — Common utilities
-- **`workers/build-worker`** — Polls jobs, spawns Garmin SDK Docker container, uploads `.prg` files
-- **`workers/ai-pipeline`** — LLM prompt → IR generation → build-worker handoff
-- **`agents/`** — AI subagent knowledge bases (garmin-sdk, backend, pm, ai-pipeline)
+pnpm + Turbo monorepo。工作区根目录：`apps/`、`packages/`、`workers/`、`agents/`、`tools/`。
 
-## Core Commands
+- **`apps/api`** — NestJS REST API（PostgreSQL + Drizzle ORM），端口 3001，前缀 `/api/v1`
+- **`apps/web`** — Next.js 前端（消费者市场 + 设计师工具 + 管理后台），端口 3000
+- **`packages/ir-schema`** — **核心契约包**（Watch Face IR 的 Zod schemas + TypeScript 类型）
+- **`packages/api-types`** — 错误码定义（计划生成 OpenAPI → TypeScript 类型）
+- **`packages/shared-utils`** — ULID、货币、异步重试等工具函数
+- **`workers/build-worker`** — 轮询任务，启动 Garmin SDK Docker 容器，上传 `.prg` 文件
+- **`workers/ai-pipeline`** — LLM prompt → IR 生成 → 移交 build-worker
+- **`agents/`** — AI 子智能体知识库（garmin-sdk、backend、pm、ai-pipeline）
+
+## 核心命令
 
 ```bash
-pnpm bootstrap          # First-time setup: install + build + db migrate + seed
-pnpm dev                # Start all apps + workers (Turbo, concurrency=12)
-pnpm build              # Build all packages
-pnpm test               # Run all unit tests (Vitest)
-pnpm test:watch         # Watch mode
-pnpm lint               # ESLint full scan
-pnpm lint:fix           # ESLint auto-fix
-pnpm typecheck          # tsc full check
-pnpm format             # Prettier (TS/JS/JSON/MD/YAML)
+pnpm bootstrap          # 首次初始化：install + build + db migrate + seed
+pnpm dev                # 启动所有应用和 workers（Turbo，并发数=12）
+pnpm build              # 构建所有包
+pnpm test               # 运行所有单元测试（Vitest）
+pnpm test:watch         # 监听模式
+pnpm lint               # ESLint 全量扫描
+pnpm lint:fix           # ESLint 自动修复
+pnpm typecheck          # tsc 全量检查
+pnpm format             # Prettier（TS/JS/JSON/MD/YAML）
+pnpm format:check       # Prettier 检查（不写入）
 
-# Target a single package
+# 针对单个包（--filter 使用包名或目录短名均可）
 pnpm --filter @wewatch/ir-schema test
 pnpm --filter @wewatch/ir-schema build
+pnpm --filter api dev               # 仅启动 API
+pnpm --filter web dev               # 仅启动 Web
 
-# Database (from apps/api)
-pnpm --filter @wewatch/api db:migrate
-pnpm --filter @wewatch/api db:seed
+# 运行单个测试文件（Vitest）
+pnpm --filter api exec vitest run src/auth/auth.service.spec.ts
 
-# Emit JSON Schema from IR (for non-TS consumers)
+# 数据库（apps/api）
+pnpm --filter api db:migrate
+pnpm --filter api db:seed           # 注意：seed.ts 尚未创建
+
+# 智能体管理
+pnpm agents:list                    # 列出所有 agents/
+pnpm agents:check                   # 校验 agent 知识库 frontmatter
+
+# 从 IR 生成 JSON Schema（供非 TS 消费者使用）
 pnpm --filter @wewatch/ir-schema json-schema
 ```
 
-## Local Dev Services (Docker Compose)
+## 本地开发服务（Docker Compose）
 
 ```bash
-docker compose up -d                        # PostgreSQL 16, Redis 7, Meilisearch 1.10
-docker compose --profile garmin build       # Build Garmin SDK image (optional, heavy)
+docker compose up -d                        # PostgreSQL:5432、Redis:6379、Meilisearch:7700
+docker compose --profile garmin build       # 构建 Garmin SDK 镜像（可选，较重）
 ```
 
-Services are pre-configured with health checks and persistent volumes.
+服务已预配置健康检查和持久化卷。Web 通过 `NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1`（浏览器端）和 `API_INTERNAL_URL=http://localhost:3001/api/v1`（服务端）访问 API。
 
-## `@wewatch/ir-schema` — The Central Contract
+## `@wewatch/ir-schema` — 核心契约
 
-**Every package depends on this.** Before working on any app/worker, read `packages/ir-schema/src/schema.ts` and `packages/ir-schema/src/devices.ts`.
+**所有包都依赖此包。** 在开发任何 app/worker 之前，请先阅读 `packages/ir-schema/src/schema.ts` 和 `packages/ir-schema/src/devices.ts`。
 
-- `schema.ts` — Zod schemas for the Watch Face Intermediate Representation
-- `types.ts` — TypeScript types inferred from Zod schemas
-- `devices.ts` — Device capability matrix (30+ Garmin models)
-- `validators.ts` — Device-specific validation rules
-- `IR_VERSION` constant is exported from `index.ts`
+- `schema.ts` — Watch Face 中间表示的 Zod schemas
+- `types.ts` — 从 Zod schemas 推导出的 TypeScript 类型
+- `devices.ts` — 设备能力矩阵（30+ 款 Garmin 型号）
+- `validators.ts` — 设备专属校验规则
+- `IR_VERSION` 常量从 `index.ts` 导出
+- 子路径导出：`@wewatch/ir-schema`、`@wewatch/ir-schema/devices`、`@wewatch/ir-schema/validators`
 
-Any change to IR must be reviewed for ripple effects across: web editor, API, build-worker, ai-pipeline, and the garmin-sdk-agent knowledge base.
+对 IR 的任何修改都必须评估对以下模块的影响：web 编辑器、API、build-worker、ai-pipeline 以及 garmin-sdk-agent 知识库。
 
-## Import Conventions
+## 导入规范
 
-ESLint bans deep relative imports (`../../*`). Always use workspace aliases:
+ESLint 禁止深层相对路径导入（`../../*`）。必须使用工作区别名：
 
 ```typescript
 import { ... } from '@wewatch/ir-schema';
@@ -75,44 +88,79 @@ import { ... } from '@wewatch/api-types';
 import { ... } from '@wewatch/shared-utils';
 ```
 
-Aliases are defined in `tsconfig.base.json` and resolve to each package's `src/index.ts`.
+别名在 `tsconfig.base.json` 中定义，解析到各包的 `src/index.ts`。
 
-## TypeScript Configuration
+## TypeScript 配置
 
-Base config (`tsconfig.base.json`): `strict: true`, `noUncheckedIndexedAccess: true`, `noImplicitOverride: true`, `target: ES2022`, `moduleResolution: Bundler`.
+基础配置（`tsconfig.base.json`）：`strict: true`、`noUncheckedIndexedAccess: true`、`noImplicitOverride: true`、`target: ES2022`、`moduleResolution: Bundler`。
 
-- `apps/api` extends base + adds `experimentalDecorators: true` (NestJS decorators)
-- `apps/web` extends base + adds `jsx: "preserve"` (Next.js)
+- `apps/api` 继承基础配置，添加 `experimentalDecorators: true`（NestJS 装饰器），输出格式 CommonJS
+- `apps/web` 继承基础配置，添加 `jsx: "preserve"`（Next.js）
 
-## ESLint (Flat Config)
+## ESLint（Flat Config）
 
-ESLint 9 flat config in `eslint.config.js`. No `.eslintrc.json`. `@typescript-eslint/no-explicit-any` is an error. `no-console` is a warning (`.warn` and `.error` are allowed).
+ESLint 9 flat config，配置文件为 `eslint.config.js`，无 `.eslintrc.json`。`@typescript-eslint/no-explicit-any` 为 error 级别。`no-console` 为 warning 级别（允许 `.warn` 和 `.error`）。
 
-## AI Agents
+## 测试约定（Vitest）
 
-The `agents/` directory contains knowledge bases for AI subagents, not human documentation. Each agent has a `SYSTEM_PROMPT.md`, domain-specific guides, and code/doc templates. Agent files must include `version: x.y.z` and `last_updated: YYYY-MM-DD` frontmatter; changes require PR review.
+- 测试文件命名：`**/*.spec.ts`
+- API 测试使用 NestJS `Test.createTestingModule()`；通过 thenable 链模拟 Drizzle 查询构造器（每个查询方法返回自身以支持链式调用）
+- 文件上传测试需验证 magic bytes（JPEG/PNG 文件头），不能只检查 MIME 类型
 
-- **`garmin-sdk-agent`** — IR → Monkey C code generation, Garmin SDK compile/publish, device-specific performance budgets
-- **`backend-agent`** — NestJS module design, Drizzle schema conventions, security rules
-- **`ai-pipeline-agent`** — Prompt → IR pipeline, LLM model selection, image generation rules
-- **`pm-agent`** — Product strategy, PRD templates, prioritization framework
+## API 安全约定
+
+- JWT 通过 httpOnly cookie（名称：`ww_token`）传输，不放 Authorization header
+- Bcrypt cost factor：12
+- 限流：100 请求/分钟/IP（ThrottlerGuard 全局生效）
+- 文件上传必须校验 magic bytes（SEC-05 规则），MIME 类型校验不够
+
+## AI 智能体
+
+`agents/` 目录包含 AI 子智能体的知识库，非人工文档。每个智能体有 `SYSTEM_PROMPT.md`、领域专属指南和代码/文档模板。智能体文件必须包含 `version: x.y.z` 和 `last_updated: YYYY-MM-DD` 的 frontmatter；变更需经 PR 审查。
+
+- **`garmin-sdk-agent`** — IR → Monkey C 代码生成、Garmin SDK 编译/发布、设备性能预算
+- **`backend-agent`** — NestJS 模块设计、Drizzle schema 规范、安全规则
+- **`ai-pipeline-agent`** — Prompt → IR 流水线、LLM 模型选择、图像生成规则
+- **`pm-agent`** — 产品策略、PRD 模板、优先级框架
 
 ## Garmin SDK
 
-The Garmin SDK runs inside Docker (`infra/docker/Dockerfile.garmin-sdk`). The build-worker spawns it via `docker run`. The `connectiq-sdk-manager-windows/` directory contains the extracted SDK manager (Windows). Do not run SDK compilation outside Docker.
+Garmin SDK 运行在 Docker 内（`infra/docker/Dockerfile.garmin-sdk`）。build-worker 通过 `docker run` 启动它。`connectiq-sdk-manager-windows/` 目录包含提取出的 SDK 管理器（Windows 版）。禁止在 Docker 外运行 SDK 编译。
 
-## Environment Variables
+## 环境变量
 
-Required env vars (see `turbo.json` for the full list):
-- `DATABASE_URL`, `REDIS_URL` — local services from Docker Compose
-- `ANTHROPIC_API_KEY` — AI pipeline
-- `REPLICATE_API_TOKEN` or `OPENAI_API_KEY` — image generation
-- `GARMIN_DEVELOPER_KEY_PATH` — for signing compiled watch faces
-- `STRIPE_*` — marketplace payments
-- `R2_*` — Cloudflare R2 (compiled `.prg` storage)
+```
+# 基础设施
+DATABASE_URL            # PostgreSQL（Docker Compose 默认 localhost:5432）
+REDIS_URL               # Redis（Docker Compose 默认 localhost:6379）
+JWT_SECRET              # JWT 签名密钥
+JWT_EXPIRES_IN          # JWT 有效期（如 7d）
 
-No `.env.example` exists yet; create one when bootstrapping a fresh environment.
+# 文件存储（Cloudflare R2）
+R2_ACCOUNT_ID
+R2_ACCESS_KEY_ID
+R2_SECRET_ACCESS_KEY
+R2_BUCKET
+R2_PUBLIC_URL
 
-## Project Status
+# AI 流水线
+ANTHROPIC_API_KEY
+REPLICATE_API_TOKEN     # 或 OPENAI_API_KEY（图像生成二选一）
 
-Phase 0 (prototype). `@wewatch/ir-schema` and all `agents/` knowledge bases are complete. Apps and workers are skeleton scaffolding — most `package.json` scripts echo `TODO`. Scaffold NestJS (`apps/api`) and Next.js (`apps/web`) before implementing features.
+# Garmin 编译签名
+GARMIN_DEVELOPER_KEY_PATH
+
+# 支付（Phase 1）
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+
+# 可观测性（可选）
+SENTRY_DSN
+POSTHOG_API_KEY
+```
+
+`.env.example` 尚未创建；初始化新环境时请参照上表创建 `.env.local`（已加入 `.gitignore`）。
+
+## 项目状态
+
+第 0 阶段（原型期）。`@wewatch/ir-schema` 和所有 `agents/` 知识库已完成。`apps/api` 和 `apps/web` 骨架已搭建（auth、watchfaces 模块已有基础实现），workers 仍为占位符。`db:seed` 脚本的 `seed.ts` 尚未创建。

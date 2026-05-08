@@ -1,0 +1,19 @@
+project.manifest = manifest.xml
+
+base.sourcePath = source
+base.resourcePath = resources
+
+fr265.sourcePath = $(base.sourcePath)
+fr265.resourcePath = $(base.resourcePath)
+
+fr265s.sourcePath = $(base.sourcePath)
+fr265s.resourcePath = $(base.resourcePath)
+
+fr965.sourcePath = $(base.sourcePath)
+fr965.resourcePath = $(base.resourcePath)
+
+fenix7.sourcePath = $(base.sourcePath)
+fenix7.resourcePath = $(base.resourcePath)
+
+epix2.sourcePath = $(base.sourcePath)
+epix2.resourcePath = $(base.resourcePath)

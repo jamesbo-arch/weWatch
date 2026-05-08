@@ -1,0 +1,6 @@
+{
+  "monkeyC.jungleFiles": "monkey.jungle",
+  "monkeyC.typeCheckLevel": "Strict",
+  "monkeyC.simulatorBuildTarget": "fr265",
+  "monkeyC.sdkPath": "C:\\Users\\James\\AppData\\Roaming\\Garmin\\ConnectIQ\\Sdks\\connectiq-sdk-win-9.1.0-2026-03-09-6a872a80b"
+}

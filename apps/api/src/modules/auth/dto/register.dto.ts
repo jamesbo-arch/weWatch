@@ -1,0 +1,8 @@
+import { z } from 'zod';
+
+export const RegisterSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  brandName: z.string().min(1).max(100),
+});
+export type RegisterDto = z.infer<typeof RegisterSchema>;
