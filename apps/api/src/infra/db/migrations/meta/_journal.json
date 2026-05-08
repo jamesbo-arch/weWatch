@@ -15,6 +15,13 @@
       "when": 1778139367731,
       "tag": "0001_productive_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778225352211,
+      "tag": "0002_add_licenses_table",
+      "breakpoints": true
     }
   ]
 }

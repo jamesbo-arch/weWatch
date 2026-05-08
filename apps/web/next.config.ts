@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.cloudflarestorage.com' },
       // local dev placeholder
       { protocol: 'http', hostname: 'localhost' },
+      // seed / demo images
+      { protocol: 'https', hostname: 'picsum.photos' },
     ],
   },
 };

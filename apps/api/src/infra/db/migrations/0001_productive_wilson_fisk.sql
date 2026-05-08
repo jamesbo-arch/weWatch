@@ -1,2 +1,2 @@
-ALTER TABLE "designers" ALTER COLUMN "user_id" SET DATA TYPE uuid;--> statement-breakpoint
-ALTER TABLE "watchfaces" ALTER COLUMN "designer_id" SET DATA TYPE uuid;
+-- No-op: uuid types were applied correctly in 0000
+SELECT 1;

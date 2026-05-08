@@ -7,6 +7,7 @@ import { DatabaseModule } from './infra/db/database.module.js';
 import { R2Module } from './infra/r2/r2.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { WatchfacesModule } from './modules/watchfaces/watchfaces.module.js';
+import { LicensesModule } from './modules/licenses/licenses.module.js';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { WatchfacesModule } from './modules/watchfaces/watchfaces.module.js';
     R2Module,
     AuthModule,
     WatchfacesModule,
+    LicensesModule,
   ],
   controllers: [AppController],
   providers: [

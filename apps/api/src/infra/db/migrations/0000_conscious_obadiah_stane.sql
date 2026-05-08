@@ -10,7 +10,7 @@ CREATE TABLE "users" (
 );
 --> statement-breakpoint
 CREATE TABLE "designers" (
-	"user_id" text PRIMARY KEY NOT NULL,
+	"user_id" uuid PRIMARY KEY NOT NULL,
 	"brand_name" text NOT NULL,
 	"bio" text,
 	"avatar_url" text,
@@ -22,7 +22,7 @@ CREATE TABLE "designers" (
 --> statement-breakpoint
 CREATE TABLE "watchfaces" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"designer_id" text NOT NULL,
+	"designer_id" uuid NOT NULL,
 	"title" text NOT NULL,
 	"description" text,
 	"prg_url" text NOT NULL,
@@ -39,5 +39,10 @@ CREATE TABLE "watchfaces" (
 	"deleted_at" timestamp with time zone
 );
 --> statement-breakpoint
-ALTER TABLE "designers" ADD CONSTRAINT "designers_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "watchfaces_status_idx" ON "watchfaces" ("status");
+--> statement-breakpoint
+CREATE INDEX "watchfaces_designer_id_idx" ON "watchfaces" ("designer_id");
+--> statement-breakpoint
+ALTER TABLE "designers" ADD CONSTRAINT "designers_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+--> statement-breakpoint
 ALTER TABLE "watchfaces" ADD CONSTRAINT "watchfaces_designer_id_users_id_fk" FOREIGN KEY ("designer_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;

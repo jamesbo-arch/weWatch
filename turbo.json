@@ -24,7 +24,8 @@
     "R2_ACCOUNT_ID",
     "R2_PUBLIC_URL",
     "JWT_SECRET",
-    "JWT_EXPIRES_IN"
+    "JWT_EXPIRES_IN",
+    "LICENSE_HMAC_SECRET"
   ],
   "tasks": {
     "build": {
@@ -33,6 +34,7 @@
       "inputs": ["src/**", "tsconfig.json", "package.json"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
