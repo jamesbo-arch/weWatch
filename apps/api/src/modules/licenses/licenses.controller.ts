@@ -1,4 +1,5 @@
-import { BadRequestException, Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpStatus, Post, Query, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { ActivateSchema, CheckQuerySchema } from './dto/licenses.dto.js';
 import { LicensesService } from './licenses.service.js';
 
@@ -7,10 +8,12 @@ export class LicensesController {
   constructor(private readonly licensesService: LicensesService) {}
 
   @Post('activate')
-  async activate(@Body() body: unknown) {
+  async activate(@Body() body: unknown, @Res({ passthrough: true }) res: Response) {
     const result = ActivateSchema.safeParse(body);
     if (!result.success) throw new BadRequestException(result.error.flatten());
-    return this.licensesService.activate(result.data.deviceSerial, result.data.watchfaceId);
+    const { isNew, ...data } = await this.licensesService.activate(result.data.deviceSerial, result.data.watchfaceId);
+    res.status(isNew ? HttpStatus.CREATED : HttpStatus.OK);
+    return data;
   }
 
   @Get('check')

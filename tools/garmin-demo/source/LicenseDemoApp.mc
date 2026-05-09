@@ -29,10 +29,16 @@ class LicenseDemoApp extends Application.AppBase {
     }
 
     function onBackgroundData(data as Application.PersistableType) as Void {
-        if (!(data instanceof Lang.Dictionary)) { return; }
-        var spec = (data as Lang.Dictionary)["renderSpec"];
-        if (!(spec instanceof Lang.Dictionary)) { return; }
         var view = _view;
+        if (!(data instanceof Lang.Dictionary)) {
+            if (view != null) { view.setState(STATE_ERROR); }
+            return;
+        }
+        var spec = (data as Lang.Dictionary)["renderSpec"];
+        if (!(spec instanceof Lang.Dictionary)) {
+            if (view != null) { view.setState(STATE_ERROR); }
+            return;
+        }
         if (view == null) { return; }
         view.setRenderSpec(spec as Lang.Dictionary);
         view.setState(STATE_UNLOCKED);

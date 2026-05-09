@@ -163,7 +163,14 @@ POSTHOG_API_KEY
 
 ## 项目状态
 
-第 0 阶段（原型期）。`@wewatch/ir-schema` 和所有 `agents/` 知识库已完成。`apps/api` 和 `apps/web` 骨架已搭建（auth、watchfaces 模块已有基础实现），workers 仍为占位符。`db:seed` 脚本的 `seed.ts` 尚未创建。
+**Phase 1 进行中**（分支：`feat/license-mvp`）。完整路线图见 [ROADMAP.md](./ROADMAP.md)。
+
+- **Phase 0**（完成）：monorepo 骨架、API/Web 框架、IR Schema、AI Agents 知识库
+- **Phase 1**（进行中）：License MVP + 动态渲染已完成，待收尾：`db:seed`、`.env.example`、API 启动可靠性修复、PR 合并
+- **Phase 2**（待启动）：Stripe 支付、消费者市场页面、设计师工具、Build Worker 实现
+- `workers/build-worker` 和 `workers/ai-pipeline` 当前仍为 TODO 占位符
+- `db:seed` 脚本（`apps/api/src/db/seed.ts`）尚未创建
+- `.env.example` 尚未创建
 
 ## 编码行为准则（Karpathy Guidelines）
 

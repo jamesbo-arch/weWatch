@@ -1,12 +1,12 @@
 import Toybox.Activity;
 import Toybox.ActivityMonitor;
-import Toybox.Communications;
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
 import Toybox.Time;
 import Toybox.Time.Gregorian;
 import Toybox.WatchUi;
+import Toybox.Application.Storage;
 
 enum LicenseState {
     STATE_LOADING,
@@ -21,7 +21,6 @@ class LicenseDemoView extends WatchUi.WatchFace {
 
     private var _state as LicenseState = STATE_LOADING;
     private var _renderSpec as Lang.Dictionary?;
-    private var _bgBitmap as Graphics.BitmapReference?;
 
     function initialize() {
         WatchFace.initialize();
@@ -30,29 +29,7 @@ class LicenseDemoView extends WatchUi.WatchFace {
     function onLayout(dc as Graphics.Dc) as Void {
     }
 
-    function onShow() as Void {
-        var spec = _renderSpec;
-        if (spec == null) { return; }
-        if (Communications has :makeImageRequest) {
-            var bgImg = spec["bg_img"];
-            if (bgImg != null) {
-                Communications.makeImageRequest(
-                    bgImg.toString(),
-                    null,
-                    { :width => 260, :height => 260 },
-                    method(:onImageResponse)
-                );
-            }
-        }
-    }
-
-    function onImageResponse(responseCode as Number, data as Graphics.BitmapReference?) as Void {
-        if (responseCode == 200 && data != null) {
-            _bgBitmap = data;
-            WatchUi.requestUpdate();
-        }
-    }
-
+    function onShow() as Void {}
     function onExitSleep() as Void {}
     function onEnterSleep() as Void {}
 
@@ -63,11 +40,6 @@ class LicenseDemoView extends WatchUi.WatchFace {
 
     function setRenderSpec(spec as Lang.Dictionary) as Void {
         _renderSpec = spec;
-        WatchUi.requestUpdate();
-    }
-
-    function setBackgroundImage(bitmap as Graphics.BitmapReference) as Void {
-        _bgBitmap = bitmap;
         WatchUi.requestUpdate();
     }
 
@@ -111,17 +83,14 @@ class LicenseDemoView extends WatchUi.WatchFace {
     // ── Spec Renderer ────────────────────────────────────────────────────────
 
     private function renderSpec(dc as Graphics.Dc, spec as Lang.Dictionary, w as Number, h as Number) as Void {
-        var bgBitmap = _bgBitmap;
-        if (bgBitmap != null) {
-            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
-            dc.clear();
-            dc.drawBitmap(0, 0, bgBitmap);
-        } else {
-            var bgHex = spec["bg"];
-            var bgColor = (bgHex != null) ? parseColor(bgHex.toString()) : Graphics.COLOR_BLACK;
-            dc.setColor(bgColor, bgColor);
-            dc.clear();
-        }
+        var bgHex = spec["bg"];
+        var bgColor = (bgHex != null) ? parseColor(bgHex.toString()) : Graphics.COLOR_BLACK;
+        dc.setColor(bgColor, bgColor);
+        dc.clear();
+
+        // Background image (overrides solid bg color)
+        var bgImg = spec["bg_img"];
+        if (bgImg != null) { drawBgImage(dc, bgImg.toString()); }
 
         var elements = spec["elements"];
         if (elements == null || !(elements instanceof Lang.Array)) {
@@ -136,7 +105,8 @@ class LicenseDemoView extends WatchUi.WatchFace {
             if (t == null) { continue; }
             var type = t.toString();
 
-            if (type.equals("arc"))          { drawSpecArc(dc, elem, w, h); }
+            if (type.equals("gradient"))     { drawSpecGradient(dc, elem, w, h); }
+            else if (type.equals("arc"))     { drawSpecArc(dc, elem, w, h); }
             else if (type.equals("time"))    { drawSpecTime(dc, elem, w, h); }
             else if (type.equals("text"))    { drawSpecText(dc, elem, w, h); }
             else if (type.equals("date"))    { drawSpecDate(dc, elem, w, h); }
@@ -147,6 +117,36 @@ class LicenseDemoView extends WatchUi.WatchFace {
     }
 
     // ── Element Draw Functions ───────────────────────────────────────────────
+
+    private function drawSpecGradient(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+        var cx = w / 2;
+        var cy = h / 2;
+        var maxR = (cx < cy ? cx : cy);
+        var steps = elInt(el, "steps", 15);
+        if (steps < 2) { steps = 2; }
+
+        var c1val = el["c1"];
+        var c2val = el["c2"];
+        var c1 = (c1val != null) ? parseColor(c1val.toString()) : 0xFF4400;
+        var c2 = (c2val != null) ? parseColor(c2val.toString()) : 0x000000;
+
+        var r1 = (c1 >> 16) & 0xFF;
+        var g1 = (c1 >> 8) & 0xFF;
+        var b1 = c1 & 0xFF;
+        var r2 = (c2 >> 16) & 0xFF;
+        var g2 = (c2 >> 8) & 0xFF;
+        var b2 = c2 & 0xFF;
+
+        for (var i = 0; i < steps; i++) {
+            var radius = maxR - (maxR * i / steps);
+            var ri = r2 + (r1 - r2) * i / steps;
+            var gi = g2 + (g1 - g2) * i / steps;
+            var bi = b2 + (b1 - b2) * i / steps;
+            var color = (ri << 16) | (gi << 8) | bi;
+            dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+            dc.fillCircle(cx, cy, radius);
+        }
+    }
 
     private function drawSpecArc(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
         var color = elColor(el, Graphics.COLOR_GREEN);
@@ -246,6 +246,15 @@ class LicenseDemoView extends WatchUi.WatchFace {
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
+    private function drawBgImage(dc as Graphics.Dc, key as String) as Void {
+        var resId = null;
+        if (key.equals("aurora"))  { resId = Rez.Drawables.bg_aurora; }
+        else if (key.equals("nebula")) { resId = Rez.Drawables.bg_nebula; }
+        if (resId == null) { return; }
+        var bmp = WatchUi.loadResource(resId) as WatchUi.BitmapResource;
+        dc.drawBitmap(0, 0, bmp);
+    }
+
     private function parseColor(hex as String) as Number {
         if (hex.length() < 6) { return Graphics.COLOR_WHITE; }
         var r = hexByte(hex.substring(0, 2));
@@ -287,6 +296,7 @@ class LicenseDemoView extends WatchUi.WatchFace {
         var v = el[key];
         if (v == null) { return fallback; }
         if (v instanceof Lang.Number) { return v as Number; }
+        if (v instanceof Lang.Float)  { return (v as Lang.Float).toNumber(); }
         return fallback;
     }
 

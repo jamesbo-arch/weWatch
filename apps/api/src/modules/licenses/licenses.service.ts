@@ -37,7 +37,7 @@ export class LicensesService {
 
     if (existing[0]?.status === 'activated') {
       const renderSpec = await this.getRenderSpec(watchfaceId);
-      return { activated: true, licenseKey: existing[0].licenseKey!, renderSpec };
+      return { isNew: false, activated: true, licenseKey: existing[0].licenseKey!, renderSpec };
     }
 
     if (existing[0]) {
@@ -46,16 +46,20 @@ export class LicensesService {
         .set({ deviceSerial, licenseKey, status: 'activated', activatedAt: new Date() })
         .where(eq(licenses.id, existing[0].id));
     } else {
-      const inserted = await this.db
-        .insert(licenses)
-        .values({ watchfaceId, deviceSerial, licenseKey, status: 'activated', activatedAt: new Date() })
-        .returning({ id: licenses.id });
-
+      let inserted: Array<{ id: string }>;
+      try {
+        inserted = await this.db
+          .insert(licenses)
+          .values({ watchfaceId, deviceSerial, licenseKey, status: 'activated', activatedAt: new Date() })
+          .returning({ id: licenses.id });
+      } catch {
+        throw new BadRequestException('watchfaceId not found');
+      }
       if (!inserted[0]) throw new BadRequestException('Failed to create license — watchfaceId may be invalid');
     }
 
     const renderSpec = await this.getRenderSpec(watchfaceId);
-    return { activated: true, licenseKey, renderSpec };
+    return { isNew: !existing[0], activated: true, licenseKey, renderSpec };
   }
 
   private async getRenderSpec(watchfaceId: string): Promise<Record<string, unknown> | null> {

@@ -12,6 +12,8 @@ class LicenseServiceDelegate extends System.ServiceDelegate {
     }
 
     function onTemporalEvent() as Void {
+        // First event fires after the 5 min registered in onStart (quick first-activation).
+        // Re-register at 15 min for battery-friendly subsequent polling.
         Background.registerForTemporalEvent(new Time.Duration(15 * 60));
         var checker = new LicenseChecker();
         checker.activate(method(:onActivateResponse));

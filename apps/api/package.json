@@ -4,7 +4,7 @@
   "private": true,
   "description": "weWatch · NestJS API",
   "scripts": {
-    "dev": "nest build && nest start --watch --exec \"node --env-file=.env\"",
+    "dev": "nest build && node --env-file=.env dist/main.js",
     "build": "nest build",
     "start": "node dist/main",
     "test": "vitest run",
