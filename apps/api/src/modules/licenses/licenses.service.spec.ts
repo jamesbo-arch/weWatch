@@ -7,6 +7,7 @@ import { LicensesService } from './licenses.service.js';
 const DEVICE_SERIAL = 'GARMIN-TEST-001';
 const WATCHFACE_ID = '11111111-1111-1111-1111-111111111111';
 const HMAC_SECRET = 'test-hmac-secret';
+const SAMPLE_RENDER_SPEC = { v: 1, bg: '000000', elements: [] };
 
 function makeChain(result: unknown) {
   const chain = {} as Record<string, unknown>;
@@ -79,35 +80,52 @@ describe('LicensesService', () => {
     it('creates a new license and returns licenseKey on first activation', async () => {
       mockDb.select.mockReturnValueOnce(makeChain([]));
       mockDb.insert.mockReturnValueOnce(makeChain([{ id: 'new-uuid' }]));
+      mockDb.select.mockReturnValueOnce(makeChain([{ renderSpec: SAMPLE_RENDER_SPEC }]));
 
       const result = await service.activate(DEVICE_SERIAL, WATCHFACE_ID);
 
       expect(result.activated).toBe(true);
       expect(result.licenseKey).toMatch(/^[0-9a-f]{64}$/);
+      expect(result.renderSpec).toEqual(SAMPLE_RENDER_SPEC);
       expect(mockDb.insert).toHaveBeenCalledOnce();
     });
 
     it('returns same licenseKey on repeat activation (idempotent)', async () => {
       const expectedKey = service.computeLicenseKey(DEVICE_SERIAL, WATCHFACE_ID);
-      mockDb.select.mockReturnValue(
+      mockDb.select.mockReturnValueOnce(
         makeChain([{ id: 'existing-uuid', status: 'activated', licenseKey: expectedKey }])
       );
+      mockDb.select.mockReturnValueOnce(makeChain([{ renderSpec: SAMPLE_RENDER_SPEC }]));
 
       const result = await service.activate(DEVICE_SERIAL, WATCHFACE_ID);
 
       expect(result.activated).toBe(true);
       expect(result.licenseKey).toBe(expectedKey);
+      expect(result.renderSpec).toEqual(SAMPLE_RENDER_SPEC);
       expect(mockDb.insert).not.toHaveBeenCalled();
     });
 
     it('upgrades pending license to activated', async () => {
       mockDb.select.mockReturnValueOnce(makeChain([{ id: 'pending-uuid', status: 'pending' }]));
       mockDb.update.mockReturnValueOnce(makeChain([]));
+      mockDb.select.mockReturnValueOnce(makeChain([{ renderSpec: null }]));
 
       const result = await service.activate(DEVICE_SERIAL, WATCHFACE_ID);
 
       expect(result.activated).toBe(true);
+      expect(result.renderSpec).toBeNull();
       expect(mockDb.update).toHaveBeenCalledOnce();
+    });
+
+    it('returns null renderSpec when watchface has no render spec', async () => {
+      mockDb.select.mockReturnValueOnce(makeChain([]));
+      mockDb.insert.mockReturnValueOnce(makeChain([{ id: 'new-uuid' }]));
+      mockDb.select.mockReturnValueOnce(makeChain([{ renderSpec: null }]));
+
+      const result = await service.activate(DEVICE_SERIAL, WATCHFACE_ID);
+
+      expect(result.activated).toBe(true);
+      expect(result.renderSpec).toBeNull();
     });
 
     it('throws BadRequestException when insert returns empty (invalid watchfaceId)', async () => {

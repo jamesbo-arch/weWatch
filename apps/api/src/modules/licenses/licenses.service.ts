@@ -3,7 +3,7 @@ import { createHmac } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
 import type { Db } from '../../infra/db/client.js';
 import { DB_TOKEN } from '../../infra/db/database.module.js';
-import { licenses } from '../../infra/db/schema/index.js';
+import { licenses, watchfaces } from '../../infra/db/schema/index.js';
 
 @Injectable()
 export class LicensesService {
@@ -33,11 +33,12 @@ export class LicensesService {
       )
       .limit(1);
 
-    if (existing[0]?.status === 'activated') {
-      return { activated: true, licenseKey: existing[0].licenseKey! };
-    }
-
     const licenseKey = this.computeLicenseKey(deviceSerial, watchfaceId);
+
+    if (existing[0]?.status === 'activated') {
+      const renderSpec = await this.getRenderSpec(watchfaceId);
+      return { activated: true, licenseKey: existing[0].licenseKey!, renderSpec };
+    }
 
     if (existing[0]) {
       await this.db
@@ -53,7 +54,17 @@ export class LicensesService {
       if (!inserted[0]) throw new BadRequestException('Failed to create license — watchfaceId may be invalid');
     }
 
-    return { activated: true, licenseKey };
+    const renderSpec = await this.getRenderSpec(watchfaceId);
+    return { activated: true, licenseKey, renderSpec };
+  }
+
+  private async getRenderSpec(watchfaceId: string): Promise<Record<string, unknown> | null> {
+    const rows = await this.db
+      .select({ renderSpec: watchfaces.renderSpec })
+      .from(watchfaces)
+      .where(eq(watchfaces.id, watchfaceId))
+      .limit(1);
+    return (rows[0]?.renderSpec as Record<string, unknown> | null) ?? null;
   }
 
   async check(deviceSerial: string, watchfaceId: string): Promise<{ valid: boolean }> {

@@ -2,12 +2,11 @@ import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-// Entry point for the weWatch license-demo watch face.
+// Entry point for the weWatch container watch app.
 // Flow:
-//   1. App starts → view shows STATE_LOADING
-//   2. onStart() fires the activate() HTTP call
-//   3. HTTP callback receives { activated, licenseKey } or error
-//   4. View transitions to UNLOCKED / LOCKED / ERROR
+//   1. onStart() fires the activate() HTTP call
+//   2. HTTP callback receives { activated, licenseKey, renderSpec } or error
+//   3. View renders from spec (UNLOCKED) or shows LOCKED / ERROR state
 class LicenseDemoApp extends Application.AppBase {
 
     private var _view as LicenseDemoView?;
@@ -27,22 +26,16 @@ class LicenseDemoApp extends Application.AppBase {
         if (view == null) { return; }
 
         if (responseCode == 200 || responseCode == 201) {
-            // 2xx = activation accepted by server
+            if (data instanceof Lang.Dictionary) {
+                var dict = data as Lang.Dictionary;
+                var spec = dict["renderSpec"];
+                if (spec instanceof Lang.Dictionary) {
+                    view.setRenderSpec(spec as Lang.Dictionary);
+                }
+            }
             view.setState(STATE_UNLOCKED);
         } else if (responseCode == 402 || responseCode == 403) {
             view.setState(STATE_LOCKED);
-        } else {
-            view.setState(STATE_ERROR);
-        }
-    }
-
-    function onCheckResponse(responseCode as Number, data as Lang.Object?) as Void {
-        var view = _view;
-        if (view == null) { return; }
-
-        if (responseCode == 200 && data instanceof Lang.Dictionary) {
-            var valid = (data as Lang.Dictionary)["valid"];
-            view.setState((valid != null && valid == true) ? STATE_UNLOCKED : STATE_LOCKED);
         } else {
             view.setState(STATE_ERROR);
         }
