@@ -5,6 +5,7 @@ import Toybox.System;
 // Handles HTTP license activation and verification against the weWatch API.
 // Garmin simulator routes HTTP through the host machine's loopback, so
 // use the host machine's LAN IP (not 127.0.0.1) when testing locally.
+(:background)
 class LicenseChecker {
 
     // --- Configuration ---

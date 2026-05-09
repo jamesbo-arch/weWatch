@@ -1,5 +1,6 @@
 import Toybox.Activity;
 import Toybox.ActivityMonitor;
+import Toybox.Communications;
 import Toybox.Graphics;
 import Toybox.Lang;
 import Toybox.System;
@@ -16,17 +17,44 @@ enum LicenseState {
 
 // Dynamic watch face renderer — reads a Render Spec JSON from the API and
 // draws each element at runtime, so no recompile is needed for new designs.
-class LicenseDemoView extends WatchUi.View {
+class LicenseDemoView extends WatchUi.WatchFace {
 
     private var _state as LicenseState = STATE_LOADING;
     private var _renderSpec as Lang.Dictionary?;
+    private var _bgBitmap as Graphics.BitmapReference?;
 
     function initialize() {
-        View.initialize();
+        WatchFace.initialize();
     }
 
     function onLayout(dc as Graphics.Dc) as Void {
     }
+
+    function onShow() as Void {
+        var spec = _renderSpec;
+        if (spec == null) { return; }
+        if (Communications has :makeImageRequest) {
+            var bgImg = spec["bg_img"];
+            if (bgImg != null) {
+                Communications.makeImageRequest(
+                    bgImg.toString(),
+                    null,
+                    { :width => 260, :height => 260 },
+                    method(:onImageResponse)
+                );
+            }
+        }
+    }
+
+    function onImageResponse(responseCode as Number, data as Graphics.BitmapReference?) as Void {
+        if (responseCode == 200 && data != null) {
+            _bgBitmap = data;
+            WatchUi.requestUpdate();
+        }
+    }
+
+    function onExitSleep() as Void {}
+    function onEnterSleep() as Void {}
 
     function setState(state as LicenseState) as Void {
         _state = state;
@@ -35,6 +63,11 @@ class LicenseDemoView extends WatchUi.View {
 
     function setRenderSpec(spec as Lang.Dictionary) as Void {
         _renderSpec = spec;
+        WatchUi.requestUpdate();
+    }
+
+    function setBackgroundImage(bitmap as Graphics.BitmapReference) as Void {
+        _bgBitmap = bitmap;
         WatchUi.requestUpdate();
     }
 
@@ -78,10 +111,17 @@ class LicenseDemoView extends WatchUi.View {
     // ── Spec Renderer ────────────────────────────────────────────────────────
 
     private function renderSpec(dc as Graphics.Dc, spec as Lang.Dictionary, w as Number, h as Number) as Void {
-        var bgHex = spec["bg"];
-        var bgColor = (bgHex != null) ? parseColor(bgHex.toString()) : Graphics.COLOR_BLACK;
-        dc.setColor(bgColor, bgColor);
-        dc.clear();
+        var bgBitmap = _bgBitmap;
+        if (bgBitmap != null) {
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+            dc.clear();
+            dc.drawBitmap(0, 0, bgBitmap);
+        } else {
+            var bgHex = spec["bg"];
+            var bgColor = (bgHex != null) ? parseColor(bgHex.toString()) : Graphics.COLOR_BLACK;
+            dc.setColor(bgColor, bgColor);
+            dc.clear();
+        }
 
         var elements = spec["elements"];
         if (elements == null || !(elements instanceof Lang.Array)) {
