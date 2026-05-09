@@ -37,4 +37,11 @@ coverage/
 connectiq-sdk-manager-windows/
 *.zip
 *.rar
-node_modules
+
+# Database dump files (local backups, not source)
+*.bak
+wewatch_dev_dump.sql
+
+# Temp files
+*.tmp
+C:\Users*\
