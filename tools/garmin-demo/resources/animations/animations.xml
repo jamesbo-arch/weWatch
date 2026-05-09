@@ -1,0 +1,3 @@
+<animations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+    <animation id="bg_aurora_wave" filename="aurora_wave.mmm" />
+</animations>

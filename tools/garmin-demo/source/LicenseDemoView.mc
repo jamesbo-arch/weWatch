@@ -6,7 +6,21 @@ import Toybox.System;
 import Toybox.Time;
 import Toybox.Time.Gregorian;
 import Toybox.WatchUi;
-import Toybox.Application.Storage;
+
+// Replays the background animation on completion, ensuring it loops forever
+// even if the .mm resource was compiled without the looping flag.
+class AnimDelegate extends WatchUi.AnimationDelegate {
+    private var _view as LicenseDemoView;
+    function initialize(view as LicenseDemoView) {
+        AnimationDelegate.initialize();
+        _view = view;
+    }
+    function onAnimationEvent(event as AnimationEvent, options as Lang.Dictionary) as Void {
+        if (event == WatchUi.ANIMATION_EVENT_COMPLETE) {
+            _view.replayAnimation();
+        }
+    }
+}
 
 enum LicenseState {
     STATE_LOADING,
@@ -15,52 +29,119 @@ enum LicenseState {
     STATE_ERROR
 }
 
-// Dynamic watch face renderer — reads a Render Spec JSON from the API and
-// draws each element at runtime, so no recompile is needed for new designs.
+// Watch face with optional animated background.
+// When bg_anim is set, elements are drawn into a transparent Layer
+// composited on top of the AnimationLayer — exactly matching the
+// official Garmin AnimationWatchFace sample pattern.
 class LicenseDemoView extends WatchUi.WatchFace {
 
     private var _state as LicenseState = STATE_LOADING;
     private var _renderSpec as Lang.Dictionary?;
+    private var _animLayer as WatchUi.AnimationLayer?;
+    private var _overlayLayer as WatchUi.Layer?;
 
     function initialize() {
         WatchFace.initialize();
     }
 
     function onLayout(dc as Graphics.Dc) as Void {
+        var w = dc.getWidth();
+        var h = dc.getHeight();
+
+        _animLayer = new WatchUi.AnimationLayer(Rez.Drawables.bg_aurora_wave, {});
+        addLayer(_animLayer);
+        // Start visible so we can test if animation itself works.
+        _animLayer.setVisible(true);
+        _animLayer.play({:delegate => new AnimDelegate(self)});
+
+        // Overlay layer holds the spec elements on top of the animation.
+        _overlayLayer = new WatchUi.Layer({
+            :width => w,
+            :height => h
+        });
+        addLayer(_overlayLayer);
+        _overlayLayer.setVisible(false);
     }
 
-    function onShow() as Void {}
-    function onExitSleep() as Void {}
-    function onEnterSleep() as Void {}
+    function onShow() as Void {
+        // Always prepare the animation. play() on a hidden layer is harmless;
+        // updateLayers() will set visibility when the spec arrives.
+        if (_animLayer != null) {
+                    _animLayer.play({:delegate => new AnimDelegate(self)});;
+        }
+    }
+
+    function onExitSleep() as Void {
+        if (_animLayer != null) {
+                    _animLayer.play({:delegate => new AnimDelegate(self)});;
+        }
+    }
+
+    function onEnterSleep() as Void {
+        if (_animLayer != null) {
+            _animLayer.stop();
+        }
+    }
 
     function setState(state as LicenseState) as Void {
         _state = state;
+        updateLayers();
         WatchUi.requestUpdate();
     }
 
     function setRenderSpec(spec as Lang.Dictionary) as Void {
         _renderSpec = spec;
-        WatchUi.requestUpdate();
+        // Don't call updateLayers() here — _state hasn't been updated yet.
+        // setState() will follow immediately and handle visibility + requestUpdate.
     }
+
+    // ── Layer Visibility ────────────────────────────────────────────────────
+
+    private function updateLayers() as Void {
+        var spec = _renderSpec;
+        var unlocked = (_state == STATE_UNLOCKED && spec != null);
+        var useAnim = unlocked && spec["bg_anim"] != null;
+
+        if (_overlayLayer != null) {
+            _overlayLayer.setVisible(unlocked);
+        }
+        if (_animLayer != null) {
+            _animLayer.setVisible(useAnim);
+            if (useAnim) {
+                _animLayer.play({:delegate => new AnimDelegate(self)});
+            } else {
+                _animLayer.stop();
+            }
+        }
+    }
+
+    // Called by AnimDelegate when animation reaches end of loop.
+    // Re-starts playback so the background never stops.
+    function replayAnimation() as Void {
+        if (_animLayer != null && _animLayer.isVisible()) {
+            _animLayer.play({:delegate => new AnimDelegate(self)});
+        }
+    }
+
+    // ── onUpdate ────────────────────────────────────────────────────────────
 
     function onUpdate(dc as Graphics.Dc) as Void {
         var w = dc.getWidth();
         var h = dc.getHeight();
 
+        // Static state screens — layers are hidden, draw directly to View DC.
         if (_state == STATE_LOADING) {
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
             dc.clear();
             drawLoading(dc, w / 2, h / 2);
             return;
         }
-
         if (_state == STATE_LOCKED) {
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
             dc.clear();
             drawLocked(dc, w / 2, h / 2);
             return;
         }
-
         if (_state == STATE_ERROR) {
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
             dc.clear();
@@ -68,7 +149,6 @@ class LicenseDemoView extends WatchUi.WatchFace {
             return;
         }
 
-        // STATE_UNLOCKED — render from spec
         var spec = _renderSpec;
         if (spec == null) {
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
@@ -77,25 +157,46 @@ class LicenseDemoView extends WatchUi.WatchFace {
             return;
         }
 
-        renderSpec(dc, spec, w, h);
+        var useAnim = spec["bg_anim"] != null;
+
+        if (useAnim) {
+            // AnimationLayer plays beneath. Draw elements into the transparent
+            // overlay Layer DC — same pattern as AnimationWatchFace sample.
+            if (_overlayLayer != null) {
+                var layerDc = _overlayLayer.getDc();
+                if (layerDc != null) {
+                    layerDc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+                    layerDc.clear();
+                    drawElements(layerDc, spec, layerDc.getWidth(), layerDc.getHeight());
+                }
+            }
+            // Also clear the View DC to black so nothing shows through gaps.
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+            dc.clear();
+        } else {
+            // No animation — draw everything directly to View DC (proven path).
+            drawSpecDirect(dc, spec, w, h);
+        }
     }
 
-    // ── Spec Renderer ────────────────────────────────────────────────────────
+    // ── Direct drawing (non-animated path) ──────────────────────────────────
 
-    private function renderSpec(dc as Graphics.Dc, spec as Lang.Dictionary, w as Number, h as Number) as Void {
-        var bgHex = spec["bg"];
-        var bgColor = (bgHex != null) ? parseColor(bgHex.toString()) : Graphics.COLOR_BLACK;
+    private function drawSpecDirect(dc as Graphics.Dc, spec as Lang.Dictionary, w as Number, h as Number) as Void {
+        var bgColor = parseColor(getString(spec, "bg", "000000"));
         dc.setColor(bgColor, bgColor);
         dc.clear();
 
-        // Background image (overrides solid bg color)
         var bgImg = spec["bg_img"];
         if (bgImg != null) { drawBgImage(dc, bgImg.toString()); }
 
+        drawElements(dc, spec, w, h);
+    }
+
+    // ── Element dispatch (shared by both paths) ─────────────────────────────
+
+    private function drawElements(dc as Graphics.Dc, spec as Lang.Dictionary, w as Number, h as Number) as Void {
         var elements = spec["elements"];
-        if (elements == null || !(elements instanceof Lang.Array)) {
-            return;
-        }
+        if (elements == null || !(elements instanceof Lang.Array)) { return; }
         var arr = elements as Lang.Array;
         for (var i = 0; i < arr.size(); i++) {
             var el = arr[i];
@@ -105,117 +206,91 @@ class LicenseDemoView extends WatchUi.WatchFace {
             if (t == null) { continue; }
             var type = t.toString();
 
-            if (type.equals("gradient"))     { drawSpecGradient(dc, elem, w, h); }
-            else if (type.equals("arc"))     { drawSpecArc(dc, elem, w, h); }
-            else if (type.equals("time"))    { drawSpecTime(dc, elem, w, h); }
-            else if (type.equals("text"))    { drawSpecText(dc, elem, w, h); }
-            else if (type.equals("date"))    { drawSpecDate(dc, elem, w, h); }
-            else if (type.equals("steps"))   { drawSpecSteps(dc, elem, w, h); }
-            else if (type.equals("heart"))   { drawSpecHeart(dc, elem, w, h); }
-            else if (type.equals("battery")) { drawSpecBattery(dc, elem, w, h); }
+            if (type.equals("gradient"))     { drawGradient(dc, elem, w, h); }
+            else if (type.equals("arc"))     { drawArc(dc, elem, w, h); }
+            else if (type.equals("time"))    { drawTime(dc, elem, w, h); }
+            else if (type.equals("text"))    { drawText(dc, elem, w, h); }
+            else if (type.equals("date"))    { drawDate(dc, elem, w, h); }
+            else if (type.equals("steps"))   { drawSteps(dc, elem, w, h); }
+            else if (type.equals("heart"))   { drawHeart(dc, elem, w, h); }
+            else if (type.equals("battery")) { drawBattery(dc, elem, w, h); }
         }
     }
 
     // ── Element Draw Functions ───────────────────────────────────────────────
 
-    private function drawSpecGradient(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
-        var cx = w / 2;
-        var cy = h / 2;
+    private function drawGradient(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+        var cx = w / 2; var cy = h / 2;
         var maxR = (cx < cy ? cx : cy);
         var steps = elInt(el, "steps", 15);
         if (steps < 2) { steps = 2; }
-
-        var c1val = el["c1"];
-        var c2val = el["c2"];
-        var c1 = (c1val != null) ? parseColor(c1val.toString()) : 0xFF4400;
-        var c2 = (c2val != null) ? parseColor(c2val.toString()) : 0x000000;
-
-        var r1 = (c1 >> 16) & 0xFF;
-        var g1 = (c1 >> 8) & 0xFF;
-        var b1 = c1 & 0xFF;
-        var r2 = (c2 >> 16) & 0xFF;
-        var g2 = (c2 >> 8) & 0xFF;
-        var b2 = c2 & 0xFF;
-
+        var c1 = parseColor(getString(el, "c1", "FF4400"));
+        var c2 = parseColor(getString(el, "c2", "000000"));
+        var r1 = (c1 >> 16) & 0xFF, g1 = (c1 >> 8) & 0xFF, b1 = c1 & 0xFF;
+        var r2 = (c2 >> 16) & 0xFF, g2 = (c2 >> 8) & 0xFF, b2 = c2 & 0xFF;
         for (var i = 0; i < steps; i++) {
             var radius = maxR - (maxR * i / steps);
             var ri = r2 + (r1 - r2) * i / steps;
             var gi = g2 + (g1 - g2) * i / steps;
             var bi = b2 + (b1 - b2) * i / steps;
-            var color = (ri << 16) | (gi << 8) | bi;
-            dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+            dc.setColor((ri << 16) | (gi << 8) | bi, Graphics.COLOR_TRANSPARENT);
             dc.fillCircle(cx, cy, radius);
         }
     }
 
-    private function drawSpecArc(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+    private function drawArc(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
         var color = elColor(el, Graphics.COLOR_GREEN);
-        var rOffset = elInt(el, "r", 8);
-        var cx = w / 2;
-        var cy = h / 2;
-        var radius = (cx < cy ? cx : cy) - rOffset;
+        var cx = w / 2; var cy = h / 2;
+        var radius = (cx < cy ? cx : cy) - elInt(el, "r", 8);
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
         dc.drawArc(cx, cy, radius, Graphics.ARC_CLOCKWISE, 0, 360);
         dc.drawArc(cx, cy, radius - 1, Graphics.ARC_CLOCKWISE, 0, 360);
     }
 
-    private function drawSpecTime(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+    private function drawTime(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
         var clock = System.getClockTime();
         var timeStr = clock.hour.format("%02d") + ":" + clock.min.format("%02d");
-        var px = pctX(elInt(el, "x", 50), w);
-        var py = pctY(elInt(el, "y", 42), h);
         dc.setColor(elColor(el, Graphics.COLOR_WHITE), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(px, py, resolveFont(el["f"]), timeStr,
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(pctX(elInt(el, "x", 50), w), pctY(elInt(el, "y", 42), h),
+            resolveFont(el["f"]), timeStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    private function drawSpecText(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
-        var v = el["v"];
-        if (v == null) { return; }
-        var px = pctX(elInt(el, "x", 50), w);
-        var py = pctY(elInt(el, "y", 60), h);
+    private function drawText(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+        var v = el["v"]; if (v == null) { return; }
         dc.setColor(elColor(el, Graphics.COLOR_LT_GRAY), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(px, py, resolveFont(el["f"]), v.toString(),
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(pctX(elInt(el, "x", 50), w), pctY(elInt(el, "y", 60), h),
+            resolveFont(el["f"]), v.toString(), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    private function drawSpecDate(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+    private function drawDate(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
         var today = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-        var dateStr = today.month.format("%02d") + "/" + today.day.format("%02d");
-        var px = pctX(elInt(el, "x", 50), w);
-        var py = pctY(elInt(el, "y", 72), h);
         dc.setColor(elColor(el, Graphics.COLOR_DK_GRAY), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(px, py, resolveFont(el["f"]), dateStr,
+        dc.drawText(pctX(elInt(el, "x", 50), w), pctY(elInt(el, "y", 72), h),
+            resolveFont(el["f"]), today.month.format("%02d") + "/" + today.day.format("%02d"),
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    private function drawSpecSteps(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+    private function drawSteps(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
         var info = ActivityMonitor.getInfo();
         var steps = (info.steps != null) ? info.steps.toString() : "--";
-        var px = pctX(elInt(el, "x", 50), w);
-        var py = pctY(elInt(el, "y", 82), h);
         dc.setColor(elColor(el, Graphics.COLOR_BLUE), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(px, py, resolveFont(el["f"]), steps + " stp",
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(pctX(elInt(el, "x", 50), w), pctY(elInt(el, "y", 82), h),
+            resolveFont(el["f"]), steps + " stp", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    private function drawSpecHeart(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+    private function drawHeart(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
         var info = Activity.getActivityInfo();
         var hr = (info != null && info.currentHeartRate != null) ? info.currentHeartRate.toString() : "--";
-        var px = pctX(elInt(el, "x", 25), w);
-        var py = pctY(elInt(el, "y", 82), h);
         dc.setColor(elColor(el, Graphics.COLOR_RED), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(px, py, resolveFont(el["f"]), hr + " bpm",
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(pctX(elInt(el, "x", 25), w), pctY(elInt(el, "y", 82), h),
+            resolveFont(el["f"]), hr + " bpm", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    private function drawSpecBattery(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
+    private function drawBattery(dc as Graphics.Dc, el as Lang.Dictionary, w as Number, h as Number) as Void {
         var stats = System.getSystemStats();
-        var pct = stats.battery.format("%d") + "%";
-        var px = pctX(elInt(el, "x", 75), w);
-        var py = pctY(elInt(el, "y", 82), h);
         dc.setColor(elColor(el, Graphics.COLOR_YELLOW), Graphics.COLOR_TRANSPARENT);
-        dc.drawText(px, py, resolveFont(el["f"]), pct,
+        dc.drawText(pctX(elInt(el, "x", 75), w), pctY(elInt(el, "y", 82), h),
+            resolveFont(el["f"]), stats.battery.format("%d") + "%",
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
@@ -251,8 +326,7 @@ class LicenseDemoView extends WatchUi.WatchFace {
         if (key.equals("aurora"))  { resId = Rez.Drawables.bg_aurora; }
         else if (key.equals("nebula")) { resId = Rez.Drawables.bg_nebula; }
         if (resId == null) { return; }
-        var bmp = WatchUi.loadResource(resId) as WatchUi.BitmapResource;
-        dc.drawBitmap(0, 0, bmp);
+        dc.drawBitmap(0, 0, WatchUi.loadResource(resId) as WatchUi.BitmapResource);
     }
 
     private function parseColor(hex as String) as Number {
@@ -264,9 +338,7 @@ class LicenseDemoView extends WatchUi.WatchFace {
     }
 
     private function hexByte(s as String) as Number {
-        var hi = hexNibble(s.substring(0, 1).toCharArray()[0]);
-        var lo = hexNibble(s.substring(1, 2).toCharArray()[0]);
-        return (hi << 4) | lo;
+        return (hexNibble(s.toCharArray()[0]) << 4) | hexNibble(s.toCharArray()[1]);
     }
 
     private function hexNibble(c as Char) as Number {
@@ -300,11 +372,11 @@ class LicenseDemoView extends WatchUi.WatchFace {
         return fallback;
     }
 
-    private function pctX(pct as Number, w as Number) as Number {
-        return (w * pct) / 100;
+    private function getString(el as Lang.Dictionary, key as String, fallback as String) as String {
+        var v = el[key];
+        return (v != null) ? v.toString() : fallback;
     }
 
-    private function pctY(pct as Number, h as Number) as Number {
-        return (h * pct) / 100;
-    }
+    private function pctX(pct as Number, w as Number) as Number { return (w * pct) / 100; }
+    private function pctY(pct as Number, h as Number) as Number { return (h * pct) / 100; }
 }
