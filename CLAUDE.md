@@ -161,6 +161,10 @@ POSTHOG_API_KEY
 
 `.env.example` 尚未创建；初始化新环境时请参照上表创建 `.env.local`（已加入 `.gitignore`）。
 
+## 自定义 Slash Commands
+
+- **`/log-dev`** — 将本轮开发进度追加到 `docs/DEVELOPMENT_LOG.md`。记录目标计划、完成项、架构变更、测试结果、下一步计划。定义文件：`.claude/skills/log-dev/SKILL.md`。
+
 ## 项目状态
 
 **Phase 1 进行中**（分支：`feat/license-mvp`）。完整路线图见 [ROADMAP.md](./ROADMAP.md)。

@@ -11,8 +11,8 @@ class LicenseChecker {
     // --- Configuration ---
     // For local dev: set to your machine's LAN IP, e.g. "http://192.168.1.x:3001"
     // For production: set to "https://api.wewatch.app"
-    private var _apiBase as String = "http://192.168.155.81:3001";
-    private var _watchfaceId as String = "24669676-c951-4dac-8c6e-052d57c0dfd3"; // Midnight Minimal
+    private var _apiBase as String = "http://192.168.155.81:4001";
+    private var _watchfaceId as String = "a1b2c3d4-e5f6-4789-abcd-ef1234567890"; // Aurora Wave
     // ---------------------
 
     // POST /api/v1/licenses/activate

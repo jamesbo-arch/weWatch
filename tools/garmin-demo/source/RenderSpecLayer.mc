@@ -15,6 +15,7 @@ class RenderSpecLayer extends WatchUi.Layer {
     private var _spec as Lang.Dictionary?;
     // Cache the last bg_img key to avoid reloading bitmap every frame.
     private var _bgImgKey as String?;
+    private var _bgBmp as WatchUi.BitmapResource?;
 
     function initialize() {
         Layer.initialize({});
@@ -23,6 +24,7 @@ class RenderSpecLayer extends WatchUi.Layer {
     function setSpec(spec as Lang.Dictionary?) as Void {
         _spec = spec;
         _bgImgKey = null;
+        _bgBmp = null;
     }
 
     // Called by the View after setSpec + setVisible to guarantee a redraw.
@@ -186,12 +188,17 @@ class RenderSpecLayer extends WatchUi.Layer {
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private function drawBgImage(dc as Graphics.Dc, key as String) as Void {
-        var resId = null;
-        if (key.equals("aurora"))  { resId = Rez.Drawables.bg_aurora; }
-        else if (key.equals("nebula")) { resId = Rez.Drawables.bg_nebula; }
-        if (resId == null) { return; }
-        var bmp = WatchUi.loadResource(resId) as WatchUi.BitmapResource;
-        dc.drawBitmap(0, 0, bmp);
+        if (!key.equals(_bgImgKey)) {
+            var resId = null;
+            if (key.equals("aurora"))  { resId = Rez.Drawables.bg_aurora; }
+            else if (key.equals("nebula")) { resId = Rez.Drawables.bg_nebula; }
+            if (resId == null) { return; }
+            _bgBmp = WatchUi.loadResource(resId) as WatchUi.BitmapResource;
+            _bgImgKey = key;
+        }
+        if (_bgBmp != null) {
+            dc.drawBitmap(0, 0, _bgBmp);
+        }
     }
 
     private function parseColor(hex as String) as Number {
