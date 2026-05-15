@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="solar-bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c2d12"/>
+      <stop offset="55%" stop-color="#3d0f05"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <linearGradient id="solar-arc" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="60%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <radialGradient id="sun-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="amber-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="soft-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="face-clip-sf">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+  </defs>
+
+  <!-- Bezel -->
+  <circle cx="200" cy="200" r="196" fill="#2c0a03"/>
+  <!-- Face background -->
+  <circle cx="200" cy="200" r="182" fill="url(#solar-bg)"/>
+
+  <!-- Warm sun glow center bloom -->
+  <circle cx="200" cy="200" r="140" fill="url(#sun-glow)"/>
+
+  <!-- Corona rays (subtle radial lines) -->
+  <g clip-path="url(#face-clip-sf)" stroke="#f97316" stroke-opacity="0.08" stroke-width="1">
+    <line x1="200" y1="200" x2="200" y2="18"/>
+    <line x1="200" y1="200" x2="324" y2="76"/>
+    <line x1="200" y1="200" x2="382" y2="200"/>
+    <line x1="200" y1="200" x2="324" y2="324"/>
+    <line x1="200" y1="200" x2="200" y2="382"/>
+    <line x1="200" y1="200" x2="76" y2="324"/>
+    <line x1="200" y1="200" x2="18" y2="200"/>
+    <line x1="200" y1="200" x2="76" y2="76"/>
+    <line x1="200" y1="200" x2="285" y2="32"/>
+    <line x1="200" y1="200" x2="368" y2="115"/>
+    <line x1="200" y1="200" x2="368" y2="285"/>
+    <line x1="200" y1="200" x2="285" y2="368"/>
+    <line x1="200" y1="200" x2="115" y2="368"/>
+    <line x1="200" y1="200" x2="32" y2="285"/>
+    <line x1="200" y1="200" x2="32" y2="115"/>
+    <line x1="200" y1="200" x2="115" y2="32"/>
+  </g>
+
+  <!-- Outer bezel tick ring (thin) -->
+  <circle cx="200" cy="200" r="178" fill="none" stroke="#f97316" stroke-opacity="0.15" stroke-width="1"/>
+
+  <!-- Solar energy arc track (r=170) -->
+  <!-- Circumference = 2*pi*170 = 1068.14 -->
+  <circle cx="200" cy="200" r="170"
+    fill="none"
+    stroke="#7c2d12"
+    stroke-width="6"
+    stroke-opacity="0.4"/>
+  <!-- Filled 68% of arc = 726 of 1068 -->
+  <circle cx="200" cy="200" r="170"
+    fill="none"
+    stroke="url(#solar-arc)"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-dasharray="726 342"
+    stroke-dashoffset="267"
+    transform="rotate(-90 200 200)"
+    filter="url(#soft-glow)"/>
+  <!-- Solar arc label -->
+  <text x="200" y="51" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="2"
+    fill="#fbbf24" fill-opacity="0.7">SOLAR 68%</text>
+
+  <!-- GARMIN label -->
+  <text x="200" y="138" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="10" font-weight="400" letter-spacing="3"
+    fill="#f97316" fill-opacity="0.4">GARMIN</text>
+
+  <!-- Main time "09:15" -->
+  <text x="200" y="215" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="76" font-weight="700" letter-spacing="-2"
+    fill="#fbbf24"
+    filter="url(#amber-glow)">09:15</text>
+
+  <!-- Divider -->
+  <line x1="155" y1="232" x2="245" y2="232" stroke="#f97316" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- UV Index (left) -->
+  <text x="122" y="260" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#fbbf24" fill-opacity="0.65">UV</text>
+  <text x="122" y="282" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="22" font-weight="700"
+    fill="#fbbf24">8</text>
+  <text x="122" y="296" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" fill="#f97316" fill-opacity="0.6">HIGH</text>
+
+  <!-- Temperature (center-left) -->
+  <text x="200" y="260" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#fbbf24" fill-opacity="0.65">TEMP</text>
+  <text x="200" y="282" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="22" font-weight="700"
+    fill="#fbbf24">34°</text>
+  <text x="200" y="296" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" fill="#f97316" fill-opacity="0.6">CELSIUS</text>
+
+  <!-- HR (right) -->
+  <text x="278" y="260" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#fbbf24" fill-opacity="0.65">HR</text>
+  <text x="278" y="282" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="22" font-weight="700"
+    fill="#fbbf24">112</text>
+  <text x="278" y="296" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" fill="#f97316" fill-opacity="0.6">bpm</text>
+
+  <!-- Thin separator between data fields -->
+  <line x1="158" y1="252" x2="158" y2="302" stroke="#f97316" stroke-opacity="0.18" stroke-width="1"/>
+  <line x1="242" y1="252" x2="242" y2="302" stroke="#f97316" stroke-opacity="0.18" stroke-width="1"/>
+
+  <!-- Date bottom -->
+  <text x="200" y="330" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="400" letter-spacing="2.5"
+    fill="#f97316" fill-opacity="0.45">THU 08 MAY</text>
+</svg>

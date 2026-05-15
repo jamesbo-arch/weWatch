@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="space-bg" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#0a0f1e"/>
+      <stop offset="60%" stop-color="#06080f"/>
+      <stop offset="100%" stop-color="#030308"/>
+    </radialGradient>
+    <radialGradient id="galaxy-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e3a5f" stop-opacity="0.25"/>
+      <stop offset="50%" stop-color="#0d1f40" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#030308" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blue-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="star-twinkle" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="time-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="face-clip-ds">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+  </defs>
+
+  <!-- Bezel (near black deep space) -->
+  <circle cx="200" cy="200" r="196" fill="#010104"/>
+  <!-- Face background -->
+  <circle cx="200" cy="200" r="182" fill="url(#space-bg)"/>
+
+  <!-- Galaxy core glow (subtle) -->
+  <ellipse cx="195" cy="195" rx="120" ry="90" fill="url(#galaxy-core)" clip-path="url(#face-clip-ds)"/>
+
+  <!-- Spiral arm hints (very subtle) -->
+  <g clip-path="url(#face-clip-ds)" fill="none" stroke="#4488cc" stroke-opacity="0.04">
+    <path d="M 200 200 Q 240 170 280 140 Q 320 110 350 80" stroke-width="20"/>
+    <path d="M 200 200 Q 160 230 120 260 Q 80 290 50 320" stroke-width="20"/>
+    <path d="M 200 200 Q 225 235 250 280 Q 275 320 285 360" stroke-width="15"/>
+    <path d="M 200 200 Q 175 165 150 120 Q 125 80 115 40" stroke-width="15"/>
+  </g>
+
+  <!-- Stars scattered across face -->
+  <g clip-path="url(#face-clip-ds)">
+    <!-- Bright stars -->
+    <circle cx="72" cy="65" r="1.8" fill="#ffffff" fill-opacity="0.95" filter="url(#star-twinkle)"/>
+    <circle cx="145" cy="48" r="1.2" fill="#ffffff" fill-opacity="0.85"/>
+    <circle cx="248" cy="55" r="1.5" fill="#c8d8ff" fill-opacity="0.9" filter="url(#star-twinkle)"/>
+    <circle cx="318" cy="72" r="1.0" fill="#ffffff" fill-opacity="0.75"/>
+    <circle cx="350" cy="105" r="1.6" fill="#ffffff" fill-opacity="0.85" filter="url(#star-twinkle)"/>
+    <circle cx="358" cy="158" r="0.9" fill="#c8d8ff" fill-opacity="0.7"/>
+    <circle cx="355" cy="240" r="1.2" fill="#ffffff" fill-opacity="0.65"/>
+    <circle cx="340" cy="298" r="0.8" fill="#ffffff" fill-opacity="0.6"/>
+    <circle cx="48" cy="148" r="1.4" fill="#ffffff" fill-opacity="0.8" filter="url(#star-twinkle)"/>
+    <circle cx="32" cy="205" r="1.1" fill="#c8d8ff" fill-opacity="0.7"/>
+    <circle cx="55" cy="268" r="0.9" fill="#ffffff" fill-opacity="0.6"/>
+    <circle cx="88" cy="338" r="1.3" fill="#ffffff" fill-opacity="0.7"/>
+    <circle cx="158" cy="352" r="0.8" fill="#c8d8ff" fill-opacity="0.6"/>
+    <circle cx="258" cy="348" r="1.1" fill="#ffffff" fill-opacity="0.7"/>
+    <circle cx="308" cy="335" r="0.9" fill="#ffffff" fill-opacity="0.55"/>
+    <!-- Medium stars -->
+    <circle cx="108" cy="92" r="0.8" fill="#ffffff" fill-opacity="0.6"/>
+    <circle cx="188" cy="68" r="0.7" fill="#aac8ff" fill-opacity="0.55"/>
+    <circle cx="292" cy="82" r="0.9" fill="#ffffff" fill-opacity="0.65"/>
+    <circle cx="335" cy="185" r="0.7" fill="#ffffff" fill-opacity="0.5"/>
+    <circle cx="322" cy="128" r="0.6" fill="#aac8ff" fill-opacity="0.5"/>
+    <circle cx="65" cy="310" r="0.8" fill="#ffffff" fill-opacity="0.45"/>
+    <circle cx="130" cy="338" r="0.7" fill="#ffffff" fill-opacity="0.5"/>
+    <!-- Faint stars -->
+    <circle cx="94" cy="128" r="0.5" fill="#ffffff" fill-opacity="0.4"/>
+    <circle cx="168" cy="82" r="0.5" fill="#ffffff" fill-opacity="0.35"/>
+    <circle cx="222" cy="72" r="0.4" fill="#aac8ff" fill-opacity="0.4"/>
+    <circle cx="278" cy="108" r="0.5" fill="#ffffff" fill-opacity="0.35"/>
+    <circle cx="362" cy="200" r="0.5" fill="#ffffff" fill-opacity="0.35"/>
+    <circle cx="42" cy="255" r="0.6" fill="#ffffff" fill-opacity="0.4"/>
+    <circle cx="38" cy="168" r="0.5" fill="#aac8ff" fill-opacity="0.35"/>
+  </g>
+
+  <!-- Saturn-like ring arc decoration -->
+  <!-- Ring tilted ellipse around the 12 o'clock area -->
+  <ellipse cx="200" cy="88" rx="68" ry="14"
+    fill="none" stroke="#6699cc" stroke-opacity="0.25" stroke-width="3"
+    clip-path="url(#face-clip-ds)"/>
+  <ellipse cx="200" cy="88" rx="68" ry="14"
+    fill="none" stroke="#99bbdd" stroke-opacity="0.12" stroke-width="8"
+    clip-path="url(#face-clip-ds)"/>
+  <!-- Small planet dot at center of ring -->
+  <circle cx="200" cy="88" r="7" fill="#3355aa" fill-opacity="0.5"/>
+  <circle cx="200" cy="88" r="5" fill="#4466bb" fill-opacity="0.4"/>
+  <!-- Ring crosses in front of planet (mask effect with same bg) -->
+  <line x1="132" y1="88" x2="200" y2="88" stroke="#030308" stroke-width="4" stroke-opacity="0.8"/>
+
+  <!-- Thin outer ring with tick marks -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#334466" stroke-opacity="0.3" stroke-width="1"/>
+  <g stroke="#4466aa" stroke-opacity="0.35" stroke-width="1">
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(0 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(30 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(60 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(90 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(120 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(150 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(180 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(210 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(240 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(270 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(300 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="36" transform="rotate(330 200 200)"/>
+  </g>
+
+  <!-- Main time display (white with blue glow) -->
+  <text x="200" y="210" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="70" font-weight="300" letter-spacing="1"
+    fill="#ffffff"
+    filter="url(#time-glow)">09:15</text>
+
+  <!-- Date -->
+  <text x="200" y="238" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="300" letter-spacing="3"
+    fill="#6699cc" fill-opacity="0.7">THU 08 MAY</text>
+
+  <!-- Data fields -->
+  <line x1="148" y1="250" x2="252" y2="250" stroke="#334466" stroke-opacity="0.4" stroke-width="1"/>
+
+  <text x="135" y="270" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" letter-spacing="1.5"
+    fill="#6699cc" fill-opacity="0.6">HR</text>
+  <text x="135" y="290" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="20" font-weight="300"
+    fill="#aaccff">74</text>
+  <text x="135" y="304" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" fill="#6699cc" fill-opacity="0.45">bpm</text>
+
+  <text x="265" y="270" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" letter-spacing="1.5"
+    fill="#6699cc" fill-opacity="0.6">STEPS</text>
+  <text x="265" y="290" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="20" font-weight="300"
+    fill="#aaccff">8,041</text>
+  <text x="265" y="304" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" fill="#6699cc" fill-opacity="0.45">steps</text>
+
+  <line x1="200" y1="255" x2="200" y2="308" stroke="#334466" stroke-opacity="0.35" stroke-width="1"/>
+
+  <!-- Battery / bottom -->
+  <text x="200" y="334" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="300" letter-spacing="2"
+    fill="#4466aa" fill-opacity="0.45">BATT 91%</text>
+
+  <!-- GARMIN subtle -->
+  <text x="200" y="160" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" font-weight="300" letter-spacing="3"
+    fill="#4466aa" fill-opacity="0.3">GARMIN</text>
+</svg>

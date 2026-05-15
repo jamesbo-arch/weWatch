@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="ocean-arc-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#14b8a6" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="bg-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="30%" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#0f2d5e"/>
+      <stop offset="100%" stop-color="#0a1628"/>
+    </linearGradient>
+    <filter id="glow-ocean" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="face-clip-od">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+  </defs>
+
+  <!-- Bezel -->
+  <circle cx="200" cy="200" r="196" fill="#050d1a"/>
+  <!-- Watch face background -->
+  <circle cx="200" cy="200" r="182" fill="url(#bg-gradient)"/>
+  <circle cx="200" cy="200" r="182" fill="#0a1628"/>
+
+  <!-- Subtle blue-teal gradient overlay -->
+  <circle cx="200" cy="200" r="182" fill="#0f2d5e" fill-opacity="0.4"/>
+
+  <!-- Blue-to-teal gradient arc (outer) -->
+  <!-- Circumference at r=168: 1055.6 -->
+  <!-- Background track -->
+  <circle cx="200" cy="200" r="168"
+    fill="none"
+    stroke="#1e3a5f"
+    stroke-width="10"
+    stroke-opacity="0.5"/>
+  <!-- Gradient arc ~80% filled -->
+  <circle cx="200" cy="200" r="168"
+    fill="none"
+    stroke="url(#ocean-arc-grad)"
+    stroke-width="10"
+    stroke-dasharray="844 211"
+    stroke-dashoffset="264"
+    stroke-linecap="round"
+    transform="rotate(-90 200 200)"
+    filter="url(#glow-ocean)"/>
+
+  <!-- Secondary thin ring -->
+  <circle cx="200" cy="200" r="152"
+    fill="none"
+    stroke="#0ea5e9"
+    stroke-width="1"
+    stroke-opacity="0.2"/>
+
+  <!-- Tick marks -->
+  <g stroke="#38bdf8" stroke-opacity="0.5" stroke-width="1.5">
+    <line x1="200" y1="30" x2="200" y2="44" transform="rotate(0 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(30 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(60 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="44" transform="rotate(90 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(120 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(150 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="44" transform="rotate(180 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(210 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(240 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="44" transform="rotate(270 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(300 200 200)"/>
+    <line x1="200" y1="30" x2="200" y2="40" transform="rotate(330 200 200)"/>
+  </g>
+
+  <!-- Moon phase icon at top -->
+  <!-- Full moon -->
+  <circle cx="200" cy="72" r="14" fill="#1e3a5f" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.4"/>
+  <!-- Crescent overlay -->
+  <circle cx="207" cy="69" r="12" fill="#0a1628"/>
+  <!-- Stars around moon -->
+  <circle cx="172" cy="60" r="1.5" fill="#38bdf8" fill-opacity="0.6"/>
+  <circle cx="228" cy="58" r="1" fill="#38bdf8" fill-opacity="0.4"/>
+  <circle cx="180" cy="78" r="1" fill="#38bdf8" fill-opacity="0.4"/>
+
+  <!-- Large digital time "10:42" -->
+  <text x="200" y="210" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="66" font-weight="700" letter-spacing="-1"
+    fill="#06b6d4"
+    filter="url(#glow-ocean)">10:42</text>
+
+  <!-- Date -->
+  <text x="200" y="232" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="12" font-weight="400" letter-spacing="2"
+    fill="#38bdf8" fill-opacity="0.55">THU 08 MAY</text>
+
+  <!-- Tide wave indicator -->
+  <!-- Wave icon (simplified sine wave path) -->
+  <path d="M 148 268 Q 158 260 168 268 Q 178 276 188 268 Q 198 260 208 268 Q 218 276 228 268 Q 238 260 248 268 Q 258 276 268 268"
+    fill="none"
+    stroke="#0ea5e9"
+    stroke-width="2"
+    stroke-opacity="0.7"/>
+
+  <!-- Tide labels -->
+  <text x="158" y="288" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1"
+    fill="#38bdf8" fill-opacity="0.5">HIGH</text>
+  <text x="158" y="300" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="13" font-weight="700"
+    fill="#0ea5e9">14:32</text>
+
+  <text x="248" y="288" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1"
+    fill="#38bdf8" fill-opacity="0.5">LOW</text>
+  <text x="248" y="300" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="13" font-weight="700"
+    fill="#0ea5e9">20:15</text>
+
+  <!-- Depth/water temp indicator -->
+  <text x="200" y="328" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="400" letter-spacing="1"
+    fill="#38bdf8" fill-opacity="0.35">WATER 18°C · DEPTH 0m</text>
+
+  <!-- Left: battery -->
+  <text x="116" y="185" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="500" letter-spacing="1"
+    fill="#38bdf8" fill-opacity="0.45">BAT</text>
+  <text x="116" y="200" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="700"
+    fill="#06b6d4">73%</text>
+
+  <!-- Right: HR -->
+  <text x="286" y="185" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="500" letter-spacing="1"
+    fill="#38bdf8" fill-opacity="0.45">HR</text>
+  <text x="286" y="200" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="700"
+    fill="#06b6d4">68</text>
+</svg>

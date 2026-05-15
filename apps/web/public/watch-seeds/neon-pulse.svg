@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <filter id="glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-pink" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="face-clip-np">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+  </defs>
+
+  <!-- Bezel -->
+  <circle cx="200" cy="200" r="196" fill="#000000"/>
+  <!-- Watch face background -->
+  <circle cx="200" cy="200" r="182" fill="#000000"/>
+
+  <!-- Subtle grid lines on face -->
+  <g clip-path="url(#face-clip-np)" stroke="#00f5ff" stroke-opacity="0.04" stroke-width="1">
+    <line x1="0" y1="100" x2="400" y2="100"/>
+    <line x1="0" y1="150" x2="400" y2="150"/>
+    <line x1="0" y1="200" x2="400" y2="200"/>
+    <line x1="0" y1="250" x2="400" y2="250"/>
+    <line x1="0" y1="300" x2="400" y2="300"/>
+    <line x1="100" y1="0" x2="100" y2="400"/>
+    <line x1="150" y1="0" x2="150" y2="400"/>
+    <line x1="200" y1="0" x2="200" y2="400"/>
+    <line x1="250" y1="0" x2="250" y2="400"/>
+    <line x1="300" y1="0" x2="300" y2="400"/>
+  </g>
+
+  <!-- Outer neon pink ring (full glow ring) -->
+  <circle cx="200" cy="200" r="174"
+    fill="none"
+    stroke="#ff00aa"
+    stroke-width="3"
+    stroke-opacity="0.25"/>
+  <!-- Pink ring glow arc (~75% filled) -->
+  <!-- Circumference at r=174: 1093 -->
+  <circle cx="200" cy="200" r="174"
+    fill="none"
+    stroke="#ff00aa"
+    stroke-width="4"
+    stroke-opacity="0.85"
+    stroke-dasharray="820 273"
+    stroke-dashoffset="273"
+    stroke-linecap="round"
+    transform="rotate(-90 200 200)"
+    filter="url(#glow-pink)"/>
+
+  <!-- Secondary cyan inner ring -->
+  <circle cx="200" cy="200" r="160"
+    fill="none"
+    stroke="#00f5ff"
+    stroke-width="1.5"
+    stroke-opacity="0.2"/>
+
+  <!-- Tick marks (neon pink) -->
+  <g stroke="#ff00aa" stroke-opacity="0.6" stroke-width="2">
+    <line x1="200" y1="26" x2="200" y2="38" transform="rotate(0 200 200)"/>
+    <line x1="200" y1="26" x2="200" y2="34" transform="rotate(90 200 200)"/>
+    <line x1="200" y1="26" x2="200" y2="38" transform="rotate(180 200 200)"/>
+    <line x1="200" y1="26" x2="200" y2="34" transform="rotate(270 200 200)"/>
+  </g>
+
+  <!-- Neon cyan digital time "10:42" -->
+  <text x="200" y="218" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="74" font-weight="700" letter-spacing="-1"
+    fill="#00f5ff"
+    filter="url(#glow-cyan)">10:42</text>
+
+  <!-- Thin separator line -->
+  <line x1="155" y1="234" x2="245" y2="234"
+    stroke="#00f5ff" stroke-opacity="0.3" stroke-width="1"/>
+
+  <!-- HR data field (left) — neon green -->
+  <text x="138" y="268" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#00ff88" fill-opacity="0.7">HR</text>
+  <text x="138" y="288" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="18" font-weight="700"
+    fill="#00ff88"
+    filter="url(#glow-green)">98</text>
+  <text x="138" y="302" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400"
+    fill="#00ff88" fill-opacity="0.55">bpm</text>
+
+  <!-- Pace data field (right) — neon green -->
+  <text x="262" y="268" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#00ff88" fill-opacity="0.7">PACE</text>
+  <text x="262" y="288" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="18" font-weight="700"
+    fill="#00ff88"
+    filter="url(#glow-green)">4:58</text>
+  <text x="262" y="302" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400"
+    fill="#00ff88" fill-opacity="0.55">/km</text>
+
+  <!-- Top label -->
+  <text x="200" y="150" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="10" font-weight="400" letter-spacing="3"
+    fill="#ff00aa" fill-opacity="0.8">PULSE MODE</text>
+
+  <!-- Bottom date -->
+  <text x="200" y="330" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="400" letter-spacing="2"
+    fill="#00f5ff" fill-opacity="0.4">THU 08 MAY</text>
+
+  <!-- Corner accents (neon cyan dots) -->
+  <circle cx="200" cy="44" r="3" fill="#00f5ff" fill-opacity="0.6" filter="url(#glow-cyan)"/>
+</svg>

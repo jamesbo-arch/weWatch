@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <clipPath id="face-clip-zc">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+  </defs>
+
+  <!-- Bezel -->
+  <circle cx="200" cy="200" r="196" fill="#d1d5db"/>
+  <!-- Watch face background -->
+  <circle cx="200" cy="200" r="182" fill="#ffffff"/>
+
+  <!-- Single thin gray progress ring (radius 165, stroke 8) -->
+  <!-- Background track -->
+  <circle cx="200" cy="200" r="165"
+    fill="none"
+    stroke="#e5e7eb"
+    stroke-width="8"/>
+
+  <!-- Progress arc (~65% filled, gray) -->
+  <!-- Circumference at r=165: 1036.7 -->
+  <circle cx="200" cy="200" r="165"
+    fill="none"
+    stroke="#9ca3af"
+    stroke-width="8"
+    stroke-dasharray="673 363"
+    stroke-dashoffset="259"
+    stroke-linecap="round"
+    transform="rotate(-90 200 200)"/>
+
+  <!-- Time "10:42" center, dark gray -->
+  <text x="200" y="215" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="70" font-weight="300" letter-spacing="-3"
+    fill="#1f2937">10:42</text>
+
+  <!-- Single thin activity ring below (indigo, smaller) -->
+  <!-- Background track at r=145 -->
+  <circle cx="200" cy="200" r="145"
+    fill="none"
+    stroke="#e0e7ff"
+    stroke-width="5"/>
+  <!-- Activity arc ~40% filled -->
+  <!-- Circumference at r=145: 911 -->
+  <circle cx="200" cy="200" r="145"
+    fill="none"
+    stroke="#6366f1"
+    stroke-width="5"
+    stroke-dasharray="364 547"
+    stroke-dashoffset="228"
+    stroke-linecap="round"
+    transform="rotate(-90 200 200)"/>
+
+  <!-- Date — minimal, very light -->
+  <text x="200" y="248" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="13" font-weight="400" letter-spacing="3"
+    fill="#9ca3af">THU 08</text>
+
+  <!-- Tiny dot markers at 12, 3, 6, 9 on outer ring -->
+  <circle cx="200" cy="27" r="3" fill="#e5e7eb"/>
+  <circle cx="373" cy="200" r="3" fill="#e5e7eb"/>
+  <circle cx="200" cy="373" r="3" fill="#e5e7eb"/>
+  <circle cx="27" cy="200" r="3" fill="#e5e7eb"/>
+
+  <!-- Single minimal stat: steps -->
+  <text x="200" y="288" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="300" letter-spacing="1"
+    fill="#6b7280">8,432</text>
+  <text x="200" y="304" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400" letter-spacing="2"
+    fill="#d1d5db">STEPS</text>
+
+  <!-- Indigo accent dot at ring end -->
+  <!-- The arc ends at approximately 6 degrees past zero (from the dashoffset calc) -->
+  <!-- Place a subtle accent at the ring gap -->
+  <circle cx="200" cy="55" r="4" fill="#6366f1" fill-opacity="0.6"/>
+</svg>

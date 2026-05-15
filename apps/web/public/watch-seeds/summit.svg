@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <clipPath id="face-clip-sm">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+    <filter id="subtle-texture">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+      <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blend"/>
+      <feComposite in="blend" in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+
+  <!-- Bezel -->
+  <circle cx="200" cy="200" r="196" fill="#080808"/>
+  <!-- Watch face background -->
+  <circle cx="200" cy="200" r="182" fill="#0f0f12"/>
+
+  <!-- Texture overlay (subtle noise) -->
+  <circle cx="200" cy="200" r="182" fill="#1a1a1f" fill-opacity="0.3"/>
+
+  <!-- Compass rose background (low opacity) -->
+  <g transform="translate(200, 200)" fill="none" stroke="#ffffff" stroke-opacity="0.07">
+    <!-- Cardinal lines -->
+    <line x1="0" y1="-155" x2="0" y2="155" stroke-width="1.5"/>
+    <line x1="-155" y1="0" x2="155" y2="0" stroke-width="1.5"/>
+    <!-- Ordinal lines (45 degrees) -->
+    <line x1="-110" y1="-110" x2="110" y2="110" stroke-width="1"/>
+    <line x1="110" y1="-110" x2="-110" y2="110" stroke-width="1"/>
+    <!-- Inner compass circles -->
+    <circle cx="0" cy="0" r="60" stroke-opacity="0.06" stroke-width="1"/>
+    <circle cx="0" cy="0" r="100" stroke-opacity="0.05" stroke-width="1"/>
+    <!-- Diamond compass points -->
+    <polygon points="0,-10 4,0 0,10 -4,0" fill="#ffffff" fill-opacity="0.08" stroke="none" transform="translate(0,-115)"/>
+    <polygon points="0,-10 4,0 0,10 -4,0" fill="#f97316" fill-opacity="0.2" stroke="none" transform="translate(0,-115) rotate(0)"/>
+  </g>
+
+  <!-- Compass cardinal labels (very faint) -->
+  <text x="200" y="55" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="700" letter-spacing="1"
+    fill="#f97316" fill-opacity="0.4">N</text>
+  <text x="200" y="358" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="700" letter-spacing="1"
+    fill="#ffffff" fill-opacity="0.2">S</text>
+  <text x="356" y="205" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="700" letter-spacing="1"
+    fill="#ffffff" fill-opacity="0.2">E</text>
+  <text x="44" y="205" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="700" letter-spacing="1"
+    fill="#ffffff" fill-opacity="0.2">W</text>
+
+  <!-- Outer ring -->
+  <circle cx="200" cy="200" r="176"
+    fill="none"
+    stroke="#f97316"
+    stroke-width="2"
+    stroke-opacity="0.2"/>
+  <!-- Orange arc progress (~60%) -->
+  <!-- Circumference at r=176: 1105.8 -->
+  <circle cx="200" cy="200" r="176"
+    fill="none"
+    stroke="#f97316"
+    stroke-width="3"
+    stroke-opacity="0.7"
+    stroke-dasharray="663 442"
+    stroke-dashoffset="276"
+    stroke-linecap="round"
+    transform="rotate(-90 200 200)"/>
+
+  <!-- Tick marks -->
+  <g stroke="#f97316" stroke-opacity="0.5" stroke-width="2">
+    <line x1="200" y1="24" x2="200" y2="38" transform="rotate(0 200 200)"/>
+    <line x1="200" y1="24" x2="200" y2="38" transform="rotate(90 200 200)"/>
+    <line x1="200" y1="24" x2="200" y2="38" transform="rotate(180 200 200)"/>
+    <line x1="200" y1="24" x2="200" y2="38" transform="rotate(270 200 200)"/>
+  </g>
+
+  <!-- Main altitude display -->
+  <text x="200" y="148" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="10" font-weight="600" letter-spacing="2"
+    fill="#f97316" fill-opacity="0.8">ALTITUDE</text>
+  <text x="200" y="196" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="52" font-weight="800" letter-spacing="-1"
+    fill="#ffffff">2,847</text>
+  <text x="200" y="216" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="400" letter-spacing="2"
+    fill="#ffffff" fill-opacity="0.5">meters</text>
+
+  <!-- Horizontal divider -->
+  <line x1="120" y1="228" x2="280" y2="228" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+
+  <!-- Temperature (left) -->
+  <text x="138" y="248" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#f97316" fill-opacity="0.6">TEMP</text>
+  <text x="138" y="268" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="20" font-weight="700"
+    fill="#ffffff">-3°C</text>
+
+  <!-- Barometric trend (center) -->
+  <text x="200" y="248" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#f97316" fill-opacity="0.6">BARO</text>
+  <!-- Trend arrow (pointing down-right = falling) -->
+  <path d="M 190 260 L 206 272 L 202 260 M 206 272 L 194 268"
+    fill="none"
+    stroke="#f97316"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+
+  <!-- Pressure value -->
+  <text x="262" y="248" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" letter-spacing="1.5"
+    fill="#f97316" fill-opacity="0.6">PRESS</text>
+  <text x="262" y="268" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="700"
+    fill="#ffffff">1008</text>
+  <text x="262" y="280" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" font-weight="400"
+    fill="#ffffff" fill-opacity="0.4">hPa</text>
+
+  <!-- Horizontal divider 2 -->
+  <line x1="120" y1="290" x2="280" y2="290" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+
+  <!-- Time small -->
+  <text x="200" y="312" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="28" font-weight="700" letter-spacing="1"
+    fill="#ffffff" fill-opacity="0.85">10:42</text>
+
+  <!-- Battery strip at bottom -->
+  <text x="200" y="334" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400" letter-spacing="1"
+    fill="#f97316" fill-opacity="0.4">BAT 73%</text>
+</svg>

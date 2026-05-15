@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <clipPath id="face-clip-gr">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+  </defs>
+
+  <!-- Bezel -->
+  <circle cx="200" cy="200" r="196" fill="#12122a"/>
+  <!-- Watch face background -->
+  <circle cx="200" cy="200" r="182" fill="#1a1a2e"/>
+
+  <!-- Subtle grid lines -->
+  <g clip-path="url(#face-clip-gr)" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1">
+    <line x1="0" y1="80" x2="400" y2="80"/>
+    <line x1="0" y1="130" x2="400" y2="130"/>
+    <line x1="0" y1="180" x2="400" y2="180"/>
+    <line x1="0" y1="230" x2="400" y2="230"/>
+    <line x1="0" y1="280" x2="400" y2="280"/>
+    <line x1="0" y1="330" x2="400" y2="330"/>
+    <line x1="80" y1="0" x2="80" y2="400"/>
+    <line x1="130" y1="0" x2="130" y2="400"/>
+    <line x1="180" y1="0" x2="180" y2="400"/>
+    <line x1="230" y1="0" x2="230" y2="400"/>
+    <line x1="280" y1="0" x2="280" y2="400"/>
+    <line x1="330" y1="0" x2="330" y2="400"/>
+  </g>
+
+  <!-- Outer progress ring -->
+  <circle cx="200" cy="200" r="176"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="2"
+    stroke-opacity="0.08"/>
+
+  <!-- Time display top-center -->
+  <text x="200" y="110" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="56" font-weight="800" letter-spacing="-1"
+    fill="#ffffff">10:42</text>
+
+  <!-- Date -->
+  <text x="200" y="130" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="400" letter-spacing="2"
+    fill="#ffffff" fill-opacity="0.45">THU 08 MAY</text>
+
+  <!-- Divider -->
+  <line x1="110" y1="142" x2="290" y2="142" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1"/>
+
+  <!-- 4 data widgets in quadrants -->
+
+  <!-- Top-left: HR (blue box) -->
+  <rect x="72" y="152" width="110" height="68" rx="8" fill="#1e40af" fill-opacity="0.7"/>
+  <text x="127" y="172" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="700" letter-spacing="1.5"
+    fill="#93c5fd">HEART RATE</text>
+  <text x="127" y="200" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="26" font-weight="800"
+    fill="#ffffff">148</text>
+  <text x="127" y="214" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400"
+    fill="#93c5fd">bpm</text>
+
+  <!-- Top-right: Pace (orange box) -->
+  <rect x="218" y="152" width="110" height="68" rx="8" fill="#c2410c" fill-opacity="0.7"/>
+  <text x="273" y="172" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="700" letter-spacing="1.5"
+    fill="#fed7aa">PACE</text>
+  <text x="273" y="200" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="26" font-weight="800"
+    fill="#ffffff">5:12</text>
+  <text x="273" y="214" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400"
+    fill="#fed7aa">/km</text>
+
+  <!-- Bottom-left: Distance (green box) -->
+  <rect x="72" y="232" width="110" height="68" rx="8" fill="#166534" fill-opacity="0.7"/>
+  <text x="127" y="252" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="700" letter-spacing="1.5"
+    fill="#86efac">DISTANCE</text>
+  <text x="127" y="280" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="26" font-weight="800"
+    fill="#ffffff">12.4</text>
+  <text x="127" y="294" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400"
+    fill="#86efac">km</text>
+
+  <!-- Bottom-right: Battery (yellow box) -->
+  <rect x="218" y="232" width="110" height="68" rx="8" fill="#854d0e" fill-opacity="0.7"/>
+  <text x="273" y="252" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="700" letter-spacing="1.5"
+    fill="#fef08a">BATTERY</text>
+  <text x="273" y="280" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="26" font-weight="800"
+    fill="#ffffff">73%</text>
+  <text x="273" y="294" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400"
+    fill="#fef08a">charged</text>
+
+  <!-- Bottom step count strip -->
+  <text x="200" y="326" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="500" letter-spacing="1"
+    fill="#ffffff" fill-opacity="0.4">8,432 steps</text>
+  <!-- Steps bar -->
+  <rect x="130" y="332" width="140" height="3" rx="1.5" fill="#ffffff" fill-opacity="0.1"/>
+  <rect x="130" y="332" width="84" height="3" rx="1.5" fill="#60a5fa" fill-opacity="0.8"/>
+</svg>

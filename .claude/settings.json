@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(npx tsc *)",
@@ -110,7 +111,15 @@
       "Bash(/c/Users/James/AppData/Roaming/Garmin/ConnectIQ/Sdks/connectiq-sdk-win-9.1.0-2026-03-09-6a872a80b/bin/monkeyc.bat -f monkey.jungle -o bin/LicenseDemo.prg -y 'C:\\\\Users\\\\James\\\\AppData\\\\Roaming\\\\Garmin\\\\ConnectIQ\\\\developer_key.der' -d fr265)",
       "Bash(/c/Users/James/AppData/Roaming/Garmin/ConnectIQ/Sdks/connectiq-sdk-win-9.1.0-2026-03-09-6a872a80b/bin/monkeydo.bat /d/workspace/weWatch/tools/garmin-demo/bin/LicenseDemo.prg fr265)",
       "Bash(echo \"Simulator launched in background \\(PID: $!\\)\")",
-      "Bash(\"C:\\\\Users\\\\James\\\\AppData\\\\Roaming\\\\Garmin\\\\ConnectIQ\\\\Sdks\\\\connectiq-sdk-win-9.1.0-2026-03-09-6a872a80b\\\\bin\\\\monkeyc.bat\" -f \"d:\\\\workspace\\\\weWatch\\\\tools\\\\garmin-demo\\\\monkey.jungle\" -o \"d:\\\\workspace\\\\weWatch\\\\tools\\\\garmin-demo\\\\bin\\\\LicenseDemo_qa.prg\" -y \"C:\\\\Users\\\\James\\\\AppData\\\\Roaming\\\\Garmin\\\\ConnectIQ\\\\developer_key.der\" -d fr265)"
+      "Bash(\"C:\\\\Users\\\\James\\\\AppData\\\\Roaming\\\\Garmin\\\\ConnectIQ\\\\Sdks\\\\connectiq-sdk-win-9.1.0-2026-03-09-6a872a80b\\\\bin\\\\monkeyc.bat\" -f \"d:\\\\workspace\\\\weWatch\\\\tools\\\\garmin-demo\\\\monkey.jungle\" -o \"d:\\\\workspace\\\\weWatch\\\\tools\\\\garmin-demo\\\\bin\\\\LicenseDemo_qa.prg\" -y \"C:\\\\Users\\\\James\\\\AppData\\\\Roaming\\\\Garmin\\\\ConnectIQ\\\\developer_key.der\" -d fr265)",
+      "Bash(npm run lint)",
+      "Bash(npm run test *)",
+      "Bash(git commit *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Bash(curl *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\James\\.claude",
@@ -119,5 +128,13 @@
       "C:\\Users\\James\\AppData\\Roaming\\Code\\User",
       "C:\\Users\\James\\AppData\\Roaming\\Garmin\\ConnectIQ\\Sdks\\connectiq-sdk-win-9.1.0-2026-03-09-6a872a80b\\bin\\templates\\watchface\\simple\\resources\\drawables"
     ]
+  },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": true,
+    "context7@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true,
+  "env": {
+    "CLAUDE_CODE_EFFORT_LEVEL": "high"
   }
 }

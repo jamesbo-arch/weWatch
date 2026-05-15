@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <filter id="ring-glow-red" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="ring-glow-green" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="ring-glow-blue" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="face-clip-hp">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+  </defs>
+
+  <!-- Bezel (light gray border) -->
+  <circle cx="200" cy="200" r="196" fill="#d1d5db"/>
+  <!-- Face background (clean white) -->
+  <circle cx="200" cy="200" r="182" fill="#f8fafc"/>
+
+  <!-- Very subtle inner shadow ring -->
+  <circle cx="200" cy="200" r="182" fill="none" stroke="#e2e8f0" stroke-width="3"/>
+  <circle cx="200" cy="200" r="178" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- ============================================ -->
+  <!-- Activity Rings — Garmin style (3 rings)     -->
+  <!-- Ring 1 (outermost): Steps — Red (r=162)     -->
+  <!-- Ring 2 (middle): Calories — Green (r=148)   -->
+  <!-- Ring 3 (innermost): Exercise — Blue (r=134) -->
+  <!-- Circumferences: r162=1018, r148=929, r134=841 -->
+  <!-- ============================================ -->
+
+  <!-- Steps ring track (r=162) -->
+  <circle cx="200" cy="200" r="162"
+    fill="none" stroke="#fecaca" stroke-width="12"/>
+  <!-- Steps ring fill (78% = 794/1018) -->
+  <circle cx="200" cy="200" r="162"
+    fill="none" stroke="#ef4444" stroke-width="12"
+    stroke-linecap="round"
+    stroke-dasharray="794 224"
+    stroke-dashoffset="255"
+    transform="rotate(-90 200 200)"
+    filter="url(#ring-glow-red)"/>
+  <!-- Steps ring end cap glow -->
+  <circle cx="200" cy="200" r="162"
+    fill="none" stroke="#ff6b6b" stroke-width="4"
+    stroke-linecap="round"
+    stroke-dasharray="2 1016"
+    stroke-dashoffset="-539"
+    transform="rotate(-90 200 200)"/>
+
+  <!-- Calories ring track (r=148) -->
+  <circle cx="200" cy="200" r="148"
+    fill="none" stroke="#bbf7d0" stroke-width="12"/>
+  <!-- Calories ring fill (62% = 576/929) -->
+  <circle cx="200" cy="200" r="148"
+    fill="none" stroke="#22c55e" stroke-width="12"
+    stroke-linecap="round"
+    stroke-dasharray="576 353"
+    stroke-dashoffset="232"
+    transform="rotate(-90 200 200)"
+    filter="url(#ring-glow-green)"/>
+
+  <!-- Exercise ring track (r=134) -->
+  <circle cx="200" cy="200" r="134"
+    fill="none" stroke="#bfdbfe" stroke-width="12"/>
+  <!-- Exercise ring fill (45% = 379/841) -->
+  <circle cx="200" cy="200" r="134"
+    fill="none" stroke="#3b82f6" stroke-width="12"
+    stroke-linecap="round"
+    stroke-dasharray="379 462"
+    stroke-dashoffset="210"
+    transform="rotate(-90 200 200)"
+    filter="url(#ring-glow-blue)"/>
+
+  <!-- GARMIN label -->
+  <text x="200" y="110" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400" letter-spacing="3"
+    fill="#94a3b8">GARMIN</text>
+
+  <!-- Main time display (large, dark) -->
+  <text x="200" y="198" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="54" font-weight="800" letter-spacing="-1"
+    fill="#0f172a">09:15</text>
+
+  <!-- Date -->
+  <text x="200" y="220" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="500" letter-spacing="2"
+    fill="#64748b">THU 08 MAY</text>
+
+  <!-- Divider -->
+  <line x1="155" y1="232" x2="245" y2="232" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Ring legend dots + labels (bottom) -->
+  <!-- Steps -->
+  <circle cx="118" cy="250" r="5" fill="#ef4444"/>
+  <text x="128" y="254" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" fill="#374151">STEPS</text>
+  <text x="128" y="266" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="700" fill="#111827">7,842</text>
+
+  <!-- Calories -->
+  <circle cx="118" cy="286" r="5" fill="#22c55e"/>
+  <text x="128" y="290" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" fill="#374151">CALORIES</text>
+  <text x="128" y="302" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="700" fill="#111827">486 kcal</text>
+
+  <!-- Exercise -->
+  <circle cx="118" cy="322" r="5" fill="#3b82f6"/>
+  <text x="128" y="326" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="600" fill="#374151">EXERCISE</text>
+  <text x="128" y="338" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="700" fill="#111827">27 min</text>
+
+  <!-- HR pill (top-right area) -->
+  <rect x="240" y="242" width="64" height="110" rx="12" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="272" y="262" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" font-weight="600" letter-spacing="1"
+    fill="#ef4444">HEART</text>
+  <text x="272" y="274" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" font-weight="600" letter-spacing="1"
+    fill="#ef4444">RATE</text>
+  <text x="272" y="302" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="28" font-weight="800"
+    fill="#0f172a">82</text>
+  <text x="272" y="316" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" fill="#94a3b8">bpm</text>
+  <!-- Heart icon -->
+  <path d="M 266 328 Q 262 324 262 320 Q 262 315 267 315 Q 272 315 272 320 Q 272 315 277 315 Q 282 315 282 320 Q 282 324 278 328 L 272 334 Z"
+    fill="#ef4444" fill-opacity="0.8" transform="scale(0.65) translate(145 175)"/>
+  <text x="272" y="338" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" fill="#ef4444">♥</text>
+  <text x="272" y="350" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" fill="#94a3b8">RESTING</text>
+</svg>

@@ -45,9 +45,6 @@ class LicenseDemoView extends WatchUi.WatchFace {
     }
 
     function onLayout(dc as Graphics.Dc) as Void {
-        var w = dc.getWidth();
-        var h = dc.getHeight();
-
         _animLayer = new WatchUi.AnimationLayer(Rez.Drawables.bg_aurora_wave, {});
         addLayer(_animLayer);
         // Start visible so we can test if animation itself works.
@@ -55,12 +52,10 @@ class LicenseDemoView extends WatchUi.WatchFace {
         _animLayer.play({:delegate => new AnimDelegate(self)});
 
         // Overlay layer holds the spec elements on top of the animation.
-        _overlayLayer = new WatchUi.Layer({
-            :width => w,
-            :height => h
-        });
+        _overlayLayer = new WatchUi.Layer({});
         addLayer(_overlayLayer);
-        _overlayLayer.setVisible(false);
+        // Sync visibility now that layers exist (covers cached spec case).
+        updateLayers();
     }
 
     function onShow() as Void {
@@ -161,16 +156,17 @@ class LicenseDemoView extends WatchUi.WatchFace {
 
         if (useAnim) {
             // AnimationLayer plays beneath. Draw elements into the transparent
-            // overlay Layer DC — same pattern as AnimationWatchFace sample.
+            // overlay layer DC (same pattern as Garmin's AnimationWatchFace sample).
             if (_overlayLayer != null) {
                 var layerDc = _overlayLayer.getDc();
                 if (layerDc != null) {
+                    // Clear with transparent background so animation shows through.
                     layerDc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
                     layerDc.clear();
                     drawElements(layerDc, spec, layerDc.getWidth(), layerDc.getHeight());
                 }
             }
-            // Also clear the View DC to black so nothing shows through gaps.
+            // Clear the View DC to black so nothing shows through gaps.
             dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
             dc.clear();
         } else {

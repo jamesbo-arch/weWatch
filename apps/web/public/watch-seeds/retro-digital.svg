@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <filter id="lcd-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="face-clip-rd">
+      <circle cx="200" cy="200" r="182"/>
+    </clipPath>
+    <!-- Pixel grid pattern -->
+    <pattern id="pixel-grid" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="7" height="7" fill="#39ff14" fill-opacity="0.025"/>
+    </pattern>
+  </defs>
+
+  <!-- Bezel -->
+  <circle cx="200" cy="200" r="196" fill="#0a0a0a"/>
+  <!-- Face background -->
+  <circle cx="200" cy="200" r="182" fill="#1c1c1c"/>
+
+  <!-- Pixel grid overlay -->
+  <circle cx="200" cy="200" r="182" fill="url(#pixel-grid)" clip-path="url(#face-clip-rd)"/>
+
+  <!-- Outer accent ring (dim green) -->
+  <circle cx="200" cy="200" r="178" fill="none" stroke="#39ff14" stroke-opacity="0.12" stroke-width="2"/>
+
+  <!-- Inner border accent -->
+  <circle cx="200" cy="200" r="172" fill="none" stroke="#39ff14" stroke-opacity="0.06" stroke-width="1"/>
+
+  <!-- GARMIN retro label -->
+  <text x="200" y="68" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="9" font-weight="400" letter-spacing="4"
+    fill="#39ff14" fill-opacity="0.3">GARMIN</text>
+
+  <!-- "LCD screen" background panel -->
+  <rect x="70" y="130" width="260" height="90" rx="4" fill="#111111" fill-opacity="0.8"/>
+  <rect x="72" y="132" width="256" height="86" rx="3" fill="none" stroke="#39ff14" stroke-opacity="0.1" stroke-width="1"/>
+
+  <!-- 7-segment digit simulation for "09" (hours) -->
+  <!-- Digit 0 at x=88 -->
+  <!-- Top seg -->
+  <rect x="90" y="138" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Top-left seg -->
+  <rect x="86" y="142" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Top-right seg -->
+  <rect x="111" y="142" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Middle seg -->
+  <rect x="90" y="162" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.2"/>
+  <!-- Bottom-left seg -->
+  <rect x="86" y="166" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Bottom-right seg -->
+  <rect x="111" y="166" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Bottom seg -->
+  <rect x="90" y="186" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+
+  <!-- Digit 9 at x=122 -->
+  <!-- Top seg -->
+  <rect x="124" y="138" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Top-left seg -->
+  <rect x="120" y="142" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Top-right seg -->
+  <rect x="145" y="142" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Middle seg -->
+  <rect x="124" y="162" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Bottom-left seg (off for 9) -->
+  <rect x="120" y="166" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.08"/>
+  <!-- Bottom-right seg -->
+  <rect x="145" y="166" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Bottom seg -->
+  <rect x="124" y="186" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+
+  <!-- Colon dots -->
+  <rect x="156" y="152" width="5" height="5" rx="1" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <rect x="156" y="172" width="5" height="5" rx="1" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+
+  <!-- Digit 1 at x=170 -->
+  <rect x="178" y="142" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <rect x="178" y="166" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+
+  <!-- Digit 5 at x=194 -->
+  <!-- Top seg -->
+  <rect x="192" y="138" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Top-left seg -->
+  <rect x="188" y="142" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Top-right seg (off for 5) -->
+  <rect x="213" y="142" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.08"/>
+  <!-- Middle seg -->
+  <rect x="192" y="162" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Bottom-left seg (off for 5) -->
+  <rect x="188" y="166" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.08"/>
+  <!-- Bottom-right seg -->
+  <rect x="213" y="166" width="5" height="22" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+  <!-- Bottom seg -->
+  <rect x="192" y="186" width="22" height="5" rx="2" fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)"/>
+
+  <!-- AM/PM indicator -->
+  <text x="240" y="155" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="11" font-weight="700" letter-spacing="1"
+    fill="#39ff14" fill-opacity="0.7">AM</text>
+
+  <!-- Seconds (smaller 7-seg look) -->
+  <text x="240" y="190" text-anchor="start"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="14" font-weight="700" letter-spacing="1"
+    fill="#39ff14" fill-opacity="0.5">:32</text>
+
+  <!-- Scan line effect -->
+  <g clip-path="url(#face-clip-rd)" fill-opacity="0.03" fill="#39ff14">
+    <rect x="18" y="130" width="364" height="2"/>
+    <rect x="18" y="138" width="364" height="2"/>
+    <rect x="18" y="146" width="364" height="2"/>
+    <rect x="18" y="154" width="364" height="2"/>
+    <rect x="18" y="162" width="364" height="2"/>
+    <rect x="18" y="170" width="364" height="2"/>
+    <rect x="18" y="178" width="364" height="2"/>
+    <rect x="18" y="186" width="364" height="2"/>
+    <rect x="18" y="194" width="364" height="2"/>
+    <rect x="18" y="202" width="364" height="2"/>
+    <rect x="18" y="210" width="364" height="2"/>
+    <rect x="18" y="218" width="364" height="2"/>
+  </g>
+
+  <!-- Lower data panel -->
+  <rect x="60" y="238" width="280" height="58" rx="3" fill="#111111" fill-opacity="0.6"/>
+
+  <!-- Steps -->
+  <text x="116" y="255" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" letter-spacing="1.5"
+    fill="#39ff14" fill-opacity="0.5">STEPS</text>
+  <text x="116" y="278" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="20" font-weight="700"
+    fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)">9,127</text>
+
+  <!-- Divider -->
+  <line x1="200" y1="242" x2="200" y2="292" stroke="#39ff14" stroke-opacity="0.15" stroke-width="1"/>
+
+  <!-- Battery -->
+  <text x="284" y="255" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="8" letter-spacing="1.5"
+    fill="#39ff14" fill-opacity="0.5">BATT</text>
+  <text x="284" y="278" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="20" font-weight="700"
+    fill="#39ff14" fill-opacity="0.9" filter="url(#lcd-glow)">61%</text>
+
+  <!-- Date strip bottom -->
+  <text x="200" y="322" text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="10" letter-spacing="2"
+    fill="#39ff14" fill-opacity="0.35">THU 2026.05.08</text>
+</svg>
